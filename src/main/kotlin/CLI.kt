@@ -1,9 +1,5 @@
 import ModelCacheRequest.*
-import utils.RestApiClient
-import utils.toJson
-
-const val URI = "http://localhost:5000/modelcache"
-
+import ModelCache as cache
 fun main() {
     while(true){
         println("Welcome to ModelCache example CLI")
@@ -41,18 +37,18 @@ fun main() {
                 }
                 println()
                 println("Inserting to cache...")
-                println("Response: ${insertToCache(chatInfo)}")
+                println("Response: ${cache.insert(chatInfo)}")
                 println()
             }
             "2" -> {
                 val entries = getQueryEntries()
                 println()
                 println("Querying cache...")
-                println("Response: ${queryCache(entries)}")
+                println("Response: ${cache.query(entries)}")
                 println()
             }
             "3" -> {
-                val response = clearCache()
+                val response = cache.clear()
                 println()
                 println("Clearing cache...")
                 println("Response: $response")
@@ -114,42 +110,4 @@ private fun getQueryEntries(): List<QueryEntry> {
         println()
     }
     return entries
-}
-
-// ===================================================================== |
-// ===================== ModelCache API operations ===================== |
-// ===================================================================== |
-
-fun insertToCache(chatInfo: List<Query>): String {
-    val request = ModelCacheRequest(
-        type = Type.INSERT,
-        chatInfo = chatInfo
-    )
-    return sendRequest(request)
-}
-
-fun queryCache(query: List<QueryEntry>): String {
-    val request = ModelCacheRequest(
-        type = Type.QUERY,
-        query = query
-    )
-    return sendRequest(request)
-}
-
-fun clearCache(): String {
-    val request = ModelCacheRequest(
-        type = Type.REMOVE,
-        removeType = RemoveType.TRUNCATE_BY_MODEL
-    )
-    return sendRequest(request)
-}
-
-fun sendRequest(request: ModelCacheRequest): String {
-    val response = RestApiClient()
-        .withUri(URI)
-        .withHeader("Content-Type", "application/json")
-        .withBody(request.toJson())
-        .withPost()
-        .send()
-    return response
 }

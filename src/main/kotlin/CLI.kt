@@ -2,71 +2,74 @@ import ModelCacheRequest.*
 import ModelCache as cache
 fun main() {
     while(true){
-        println("Welcome to ModelCache example CLI")
-        println("Select an option:")
-        println("1. Insert to cache")
-        println("2. Query cache")
-        println("3. Clear cache")
-        println("4. Exit")
-        print(">> ")
-        val choice = readlnOrNull() ?: continue
-        when (choice) {
-            "1" -> {
-                val chatInfo = mutableListOf<Query>()
-                while(true){
+        try{
+            println("Welcome to ModelCache example CLI")
+            println("Select an option:")
+            println("1. Insert to cache")
+            println("2. Query cache")
+            println("3. Clear cache")
+            println("4. Exit")
+            print(">> ")
+            val choice = readlnOrNull() ?: continue
+            when (choice) {
+                "1" -> {
+                    val chatInfo = mutableListOf<Query>()
+                    while(true){
+                        val entries = getQueryEntries()
+                        println()
+                        println("Enter output:")
+                        print(">> ")
+                        val output = readlnOrNull()
+                        if (output.isNullOrBlank()) {
+                            println("Output cannot be empty. Please try again.")
+                            continue
+                        }
+                        chatInfo.add(Query(entries, output))
+                        println()
+                        println("Do you want to add more entries? (y/n)")
+                        print(">> ")
+                        val addMore = readlnOrNull()
+                        if (addMore.equals("n", ignoreCase = true)) {
+                            break
+                        } else if (!addMore.equals("y", ignoreCase = true)) {
+                            println("Invalid choice. Please try again.")
+                            continue
+                        }
+                    }
+                    println()
+                    println("Inserting to cache...")
+                    println("Response: ${cache.insert(chatInfo)}")
+                    println()
+                }
+                "2" -> {
                     val entries = getQueryEntries()
                     println()
-                    println("Enter output:")
-                    print(">> ")
-                    val output = readlnOrNull()
-                    if (output.isNullOrBlank()) {
-                        println("Output cannot be empty. Please try again.")
-                        continue
-                    }
-                    chatInfo.add(Query(entries, output))
+                    println("Querying cache...")
+                    println("Response: ${cache.query(entries)}")
                     println()
-                    println("Do you want to add more entries? (y/n)")
-                    print(">> ")
-                    val addMore = readlnOrNull()
-                    if (addMore.equals("n", ignoreCase = true)) {
-                        break
-                    } else if (!addMore.equals("y", ignoreCase = true)) {
-                        println("Invalid choice. Please try again.")
-                        continue
-                    }
                 }
-                println()
-                println("Inserting to cache...")
-                println("Response: ${cache.insert(chatInfo)}")
-                println()
+                "3" -> {
+                    val response = cache.clear()
+                    println()
+                    println("Clearing cache...")
+                    println("Response: $response")
+                    println()
+                }
+                "4" -> {
+                    println()
+                    println("Exiting...")
+                    return
+                }
+                else -> {
+                    println()
+                    println("Invalid choice. Please try again.")
+                    println()
+                }
             }
-            "2" -> {
-                val entries = getQueryEntries()
-                println()
-                println("Querying cache...")
-                println("Response: ${cache.query(entries)}")
-                println()
-            }
-            "3" -> {
-                val response = cache.clear()
-                println()
-                println("Clearing cache...")
-                println("Response: $response")
-                println()
-            }
-            "4" -> {
-                println()
-                println("Exiting...")
-                return
-            }
-            else -> {
-                println()
-                println("Invalid choice. Please try again.")
-                println()
-            }
+        } catch (e: Exception) {
+            println("An error occurred: ${e.message}\n")
         }
     }
-
 }
 
 private fun getQueryEntries(): List<QueryEntry> {

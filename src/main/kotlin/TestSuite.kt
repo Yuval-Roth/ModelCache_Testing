@@ -39,7 +39,6 @@ class TestSuite {
             queryEntries.add(queryEntry)
             val query = Query(listOf(queryEntry),outputs[sentence1]!!)
             queries.add(query)
-//            cache.insert(listOf(query))
         }
         cache.insert(queries)
 
@@ -55,9 +54,9 @@ class TestSuite {
             results[queryEntry.content] = isHit to deltaTime
             println("${queryEntry.content}: ${if(isHit) "hit" else "miss"}, deltaTime: $deltaTime")
         }
+        println("Total time: $totalTime")
         cache.clear()
 
-        println(totalTime)
     }
 }
 

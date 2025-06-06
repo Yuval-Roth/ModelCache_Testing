@@ -52,16 +52,19 @@ class TestSuite {
             val deltaTime = response.deltaTime!!.substring(0,response.deltaTime.length-1).toFloat()
             totalTime += deltaTime
             results[queryEntry.content] = isHit to deltaTime
-            println("${queryEntry.content}: ${if(isHit) "hit" else "miss"}, deltaTime: $deltaTime")
+            println("${if(isHit) "hit" else "miss"}: ${queryEntry.content}:, deltaTime: $deltaTime")
         }
         println("Total time: $totalTime")
         cache.clear()
-
     }
 }
 
 fun main(){
-    val tests = TestSuite()
-    tests.loadData()
-    tests.standardLookup()
+    try{
+        val tests = TestSuite()
+        tests.loadData()
+        tests.standardLookup()
+    } catch(e: Exception) {
+        println("\nAn error occurred: ${e.message}\n")
+    }
 }

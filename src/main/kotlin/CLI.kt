@@ -67,7 +67,7 @@ fun main() {
                 }
             }
         } catch (e: Exception) {
-            println("An error occurred: ${e.message}\n")
+            println("\nAn error occurred: ${e.message}\n")
         }
     }
 }

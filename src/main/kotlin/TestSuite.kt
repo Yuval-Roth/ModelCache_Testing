@@ -1,7 +1,6 @@
 import ModelCache as cache
 import ModelCacheRequest.*
 import utils.fromJson
-import kotlin.system.measureTimeMillis
 
 class TestSuite {
 
@@ -10,8 +9,12 @@ class TestSuite {
     val sentences2 = HashSet<String>()
     val outputs = HashMap<String,String>()
 
-    fun loadData(){
-        val dataStream = this.javaClass.getResourceAsStream("test_data.txt")
+    init {
+        loadData()
+    }
+
+    private fun loadData(){
+        val dataStream = this.javaClass.getResourceAsStream("test_data.txt")!!
         dataStream.bufferedReader().use { reader ->
             val lines = reader.readLines()
             for (line in lines) {
@@ -26,44 +29,79 @@ class TestSuite {
         }
     }
 
-    fun run(){
-
+    private fun insert(sentences: Set<String>){
+        val queries  = buildQueries(sentences)
+        cache.insert(queries)
     }
 
-    fun standardLookup() {
-        //insert the sentences1
-        val queryEntries = mutableListOf<QueryEntry>()
+    private fun buildQueries(sentences: Set<String>): List<Query> {
         val queries = mutableListOf<Query>()
-        for (sentence1 in sentences1){
-            val queryEntry = QueryEntry(Role.USER,sentence1)
-            queryEntries.add(queryEntry)
-            val query = Query(listOf(queryEntry),outputs[sentence1]!!)
+        for (sentence in sentences) {
+            val queryEntry = QueryEntry(Role.USER, sentence)
+            val query = Query(listOf(queryEntry), outputs[sentence]!!)
             queries.add(query)
         }
-        cache.insert(queries)
+        return queries
+    }
 
+    private fun standardLookup(sentences: Set<String>) {
+        val queries = buildQueries(sentences)
         // check how long it takes to lookup everything
-        val results = mutableMapOf<String,Pair<Boolean,Float>>()
-        var totalTime = 0f
-        for(queryEntry in queryEntries){
-            val returned = cache.query(listOf(queryEntry))
+        var hitCount = 0
+        for(query in queries){
+            val returned = cache.query(query.query)
             val response = fromJson<Response>(returned)
             val isHit = response.cacheHit!!
-            val deltaTime = response.deltaTime!!.substring(0,response.deltaTime.length-1).toFloat()
-            totalTime += deltaTime
-            results[queryEntry.content] = isHit to deltaTime
-            println("${if(isHit) "hit" else "miss"}: ${queryEntry.content}:, deltaTime: $deltaTime")
+            if(isHit) hitCount++
         }
-        println("Total time: $totalTime")
+        println("Hit Ratio: ${hitCount}/${queries.size}")
+    }
+
+    private inline fun timer(run : () -> Unit): Long {
+        val startTime = System.currentTimeMillis()
+        run()
+        return System.currentTimeMillis() - startTime
+    }
+
+    private fun test_template_insert_setntencex_lookup_sentencesy(sentencesx: Set<String>, sentencesy: Set<String>, testName: String) {
+        println("----\nStarting test $testName...")
         cache.clear()
+        val totalTime = timer {
+            val insertionTime = timer { insert(sentencesx) }
+            println("Insertion took $insertionTime ms")
+            val lookupTime = timer { standardLookup(sentencesy) }
+            println("Lookup took $lookupTime ms")
+        }
+        cache.clear()
+        println("Total test time: $totalTime ms")
+    }
+
+    fun test_insert_sentecnes1_lookup_sentences1(){
+        test_template_insert_setntencex_lookup_sentencesy(sentences1, sentences1, "test_insert_sentecnes1_lookup_sentences1")
+    }
+    fun test_insert_sentecnes2_lookup_sentences2(){
+        test_template_insert_setntencex_lookup_sentencesy(sentences1, sentences2, "test_insert_sentecnes2_lookup_sentences2")
+    }
+
+    fun test_insert_sentecnes1_lookup_sentences2(){
+        test_template_insert_setntencex_lookup_sentencesy(sentences1, sentences2, "test_insert_sentecnes1_lookup_sentences2")
+    }
+
+    fun test_insert_sentecnes2_lookup_sentences1(){
+        test_template_insert_setntencex_lookup_sentencesy(sentences2, sentences1, "test_insert_sentecnes2_lookup_sentences1")
     }
 }
 
 fun main(){
     try{
         val tests = TestSuite()
-        tests.loadData()
-        tests.standardLookup()
+        // both should be hit ratio size/size
+        tests.test_insert_sentecnes1_lookup_sentences1()
+//        tests.test_insert_sentecnes2_lookup_sentences2()
+        //
+//        tests.test_insert_sentecnes1_lookup_sentences2()
+//        tests.test_insert_sentecnes2_lookup_sentences1()
+
     } catch(e: Exception) {
         println("\nAn error occurred: ${e.message}\n")
     }

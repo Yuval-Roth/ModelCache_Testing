@@ -51,10 +51,13 @@ class TestSuite {
         return queries
     }
 
-    private fun lookup(sentences: Set<String>, getExpectedHitQuery: (String) -> String) {
+    private fun lookup(sentences: Set<String>, printHits: Boolean = false, getExpectedHitQuery: (String) -> String) {
         val queries = buildQueries(sentences)
         var hitCount = 0
         var sameHitQuery = 0
+        val hits = mutableListOf<String>()
+        val unexpectedHits = mutableListOf<Pair<String,String>>()
+        val misses = mutableListOf<String>()
         for(query in queries){
             val content = query.query[0].content
             val returned = cache.query(query.query)
@@ -64,7 +67,34 @@ class TestSuite {
                 hitCount++
                 val hitQuery = response.hitQuery!!.removePrefix("user###")
                 val expectedHitQuery = getExpectedHitQuery(content)
-                if(expectedHitQuery == hitQuery) sameHitQuery++
+                if(expectedHitQuery == hitQuery) {
+                    sameHitQuery++
+                    hits.add(content)
+                } else {
+                    unexpectedHits.add(Pair(content, hitQuery))
+                }
+            } else {
+                misses.add(content)
+            }
+        }
+        if(printHits) {
+            if(hits.isNotEmpty()){
+                println("Expected hits:")
+                hits.forEach {
+                    println("[✔] query: $it, hit ${getExpectedHitQuery(it)} ")
+                }
+            }
+            if(unexpectedHits.isNotEmpty()){
+                println("Unexpected hits:")
+                unexpectedHits.forEach {
+                    println("[?] query: ${it.first}, hit: ${it.second}, expected: ${getExpectedHitQuery(it.first)}")
+                }
+            }
+            if(misses.isNotEmpty()){
+                println("Misses:")
+                misses.forEach {
+                    println("[X] query: $it, expected: ${getExpectedHitQuery(it)}")
+                }
             }
         }
         println("Hit Ratio: ${hitCount}/${queries.size} (${(hitCount.toFloat()/queries.size.toFloat())*100}%)")
@@ -109,7 +139,7 @@ class TestSuite {
             clearCacheBefore = false,
             clearCacheAfter = true,
             setup = { },
-            test = { lookup(sentences2){ s -> pairs[s]!!} }
+            test = { lookup(sentences2,true){ s -> pairs[s]!!} }
         )
     }
     fun test_insert_sentences2_selfLookup_sentences2(){
@@ -127,7 +157,7 @@ class TestSuite {
             clearCacheBefore = false,
             clearCacheAfter = true,
             setup = { },
-            test = { lookup(sentences1){ s -> pairs[s]!!} }
+            test = { lookup(sentences1,true){ s -> pairs[s]!!} }
         )
     }
 }

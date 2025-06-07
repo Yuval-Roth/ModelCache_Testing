@@ -1,6 +1,7 @@
 import com.google.gson.annotations.SerializedName
 
-data class ModelCacheRequest(
+data class
+ModelCacheRequest(
     // Mandatory fields
     val type: Type,
     val scope: Scope = Scope(Model.CODEGPT_1008), // I don't know if this is the only available option,

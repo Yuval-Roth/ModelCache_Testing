@@ -2,6 +2,7 @@ import ModelCache as cache
 import ModelCacheRequest.*
 import utils.fromJson
 
+@Suppress("FunctionName")
 class TestSuite {
 
     val pairs = HashMap<String,String>()
@@ -50,19 +51,19 @@ class TestSuite {
         return queries
     }
 
-    private fun standardLookup(sentences: Set<String>) {
+    private fun lookup(sentences: Set<String>, getExpectedHitQuery: (String) -> String) {
         val queries = buildQueries(sentences)
-        // check how long it takes to lookup everything
         var hitCount = 0
         var sameHitQuery = 0
         for(query in queries){
+            val content = query.query[0].content
             val returned = cache.query(query.query)
             val response = fromJson<Response>(returned)
             val isHit = response.cacheHit!!
             if(isHit){
                 hitCount++
                 val hitQuery = response.hitQuery!!.removePrefix("user###")
-                val expectedHitQuery = pairs[query.query[0].content]
+                val expectedHitQuery = getExpectedHitQuery(content)
                 if(expectedHitQuery == hitQuery) sameHitQuery++
             }
         }
@@ -70,50 +71,76 @@ class TestSuite {
         println("Expected query hit ratio: ${sameHitQuery}/${queries.size} (${(sameHitQuery.toFloat()/queries.size.toFloat())*100}%)")
     }
 
-    private inline fun timer(run : () -> Unit): Long {
+    private fun timer(run : () -> Unit): Long {
         val startTime = System.currentTimeMillis()
         run()
         return System.currentTimeMillis() - startTime
     }
 
-    private fun test_template_insert_setntencex_lookup_sentencesy(sentencesx: Set<String>, sentencesy: Set<String>, testName: String) {
+    private fun test(testName:String, clearCacheBefore:Boolean,clearCacheAfter: Boolean, setup: () -> Unit, test: () -> Unit){
         println("----\nStarting test $testName...")
-        cache.clear()
+        if(clearCacheBefore) cache.clear()
         val totalTime = timer {
-            val insertionTime = timer { insert(sentencesx) }
-            println("Insertion took $insertionTime ms")
-            val lookupTime = timer { standardLookup(sentencesy) }
-            println("Lookup took $lookupTime ms")
+            val insertionTime = timer { setup() }
+            println("Setup took $insertionTime ms")
+            val lookupTime = timer { test() }
+            println("Test took $lookupTime ms")
         }
-        cache.clear()
+        if(clearCacheAfter) cache.clear()
         println("Total test time: $totalTime ms")
     }
 
-    fun test_insert_sentences1_lookup_sentences1(){
-        test_template_insert_setntencex_lookup_sentencesy(sentences1, sentences1, "test_insert_sentences1_lookup_sentences1")
-    }
-    fun test_insert_sentences2_lookup_sentences2(){
-        test_template_insert_setntencex_lookup_sentencesy(sentences1, sentences2, "test_insert_sentences2_lookup_sentences2")
-    }
+    // ========================================================================== |
+    // ========================== TEST DEFINITIONS ============================== |
+    // ========================================================================== |
 
-    fun test_insert_sentences1_lookup_sentences2(){
-        test_template_insert_setntencex_lookup_sentencesy(sentences1, sentences2, "test_insert_sentences1_lookup_sentences2")
+    fun test_insert_sentences1_selfLookup_sentences1(){
+        test(
+            "insert_sentences1_selfLookup_sentences1",
+            clearCacheBefore = true,
+            clearCacheAfter = false,
+            setup = { insert(sentences1) },
+            test = { lookup(sentences1){s -> s} }
+        )
     }
-
-    fun test_insert_sentences2_lookup_sentences1(){
-        test_template_insert_setntencex_lookup_sentencesy(sentences2, sentences1, "test_insert_sentences2_lookup_sentences1")
+    fun test_sentences1_loaded_pairLookup_sentences2(){
+        test(
+            "sentences1_loaded_pairLookup_sentences2",
+            clearCacheBefore = false,
+            clearCacheAfter = true,
+            setup = { },
+            test = { lookup(sentences2){ s -> pairs[s]!!} }
+        )
+    }
+    fun test_insert_sentences2_selfLookup_sentences2(){
+        test(
+            "insert_sentences2_selfLookup_sentences2",
+            clearCacheBefore = true,
+            clearCacheAfter = false,
+            setup = { insert(sentences2) },
+            test = { lookup(sentences2){s -> s} }
+        )
+    }
+    fun test_sentences2_loaded_pairLookup_sentences1(){
+        test(
+            "sentences2_loaded_pairLookup_sentences1",
+            clearCacheBefore = false,
+            clearCacheAfter = true,
+            setup = { },
+            test = { lookup(sentences1){ s -> pairs[s]!!} }
+        )
     }
 }
 
 fun main(){
     try{
         val tests = TestSuite()
-        // both should be 100% hit ratio
-//        tests.test_insert_sentences1_lookup_sentences1()
-//        tests.test_insert_sentences2_lookup_sentences2()
 
-        tests.test_insert_sentences1_lookup_sentences2()
-        tests.test_insert_sentences2_lookup_sentences1()
+        tests.test_insert_sentences1_selfLookup_sentences1()
+        tests.test_sentences1_loaded_pairLookup_sentences2()
+
+        tests.test_insert_sentences2_selfLookup_sentences2()
+        tests.test_sentences2_loaded_pairLookup_sentences1()
 
     } catch(e: Exception) {
         println("\nAn error occurred: \n${e.stackTraceToString()}\n")

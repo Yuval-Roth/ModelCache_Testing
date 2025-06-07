@@ -81,7 +81,7 @@ class TestSuite {
             if(hits.isNotEmpty()){
                 println("Expected hits:")
                 hits.forEach {
-                    println("[✔] query: $it, hit ${getExpectedHitQuery(it)} ")
+                    println("[✔] query: $it, hit: ${getExpectedHitQuery(it)} ")
                 }
             }
             if(unexpectedHits.isNotEmpty()){

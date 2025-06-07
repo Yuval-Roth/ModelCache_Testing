@@ -1,0 +1,3 @@
+"How can I reset my password?","What's the way to reset my password?","You can reset your password by clicking on 'Forgot Password' at the login screen."
+"Can I change my account password?","Is there a way to update my password?","You can reset your password by clicking on 'Forgot Password' at the login screen."
+"How do I recover my login password?","What's the process to get back a lost password?","You can reset your password by clicking on 'Forgot Password' at the login screen."

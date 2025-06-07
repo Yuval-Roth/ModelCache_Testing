@@ -14,11 +14,17 @@ class TestSuite {
     }
 
     private fun loadData(){
+        val regex = Regex("\"([\\w'?\\s.,:!@#$%^&*+\\-°=]*)\"")
         val dataStream = this.javaClass.getResourceAsStream("test_data.txt")!!
         dataStream.bufferedReader().use { reader ->
             val lines = reader.readLines()
             for (line in lines) {
-                val (sentence1,sentence2,response) = line.split(",")
+                val matches = regex.findAll(line).map { it.groupValues[1] }.toList()
+                if(matches.size != 3){
+                    println("Input not matched correctly: $line")
+                    continue
+                }
+                val (sentence1,sentence2,response) = matches
                 sentences1.add(sentence1)
                 sentences2.add(sentence2)
                 pairs[sentence1] = sentence2
@@ -48,13 +54,20 @@ class TestSuite {
         val queries = buildQueries(sentences)
         // check how long it takes to lookup everything
         var hitCount = 0
+        var sameHitQuery = 0
         for(query in queries){
             val returned = cache.query(query.query)
             val response = fromJson<Response>(returned)
             val isHit = response.cacheHit!!
-            if(isHit) hitCount++
+            if(isHit){
+                hitCount++
+                val hitQuery = response.hitQuery!!.removePrefix("user###")
+                val expectedHitQuery = pairs[query.query[0].content]
+                if(expectedHitQuery == hitQuery) sameHitQuery++
+            }
         }
-        println("Hit Ratio: ${hitCount}/${queries.size}")
+        println("Hit Ratio: ${hitCount}/${queries.size} (${(hitCount.toFloat()/queries.size.toFloat())*100}%)")
+        println("Expected query hit ratio: ${sameHitQuery}/${queries.size} (${(sameHitQuery.toFloat()/queries.size.toFloat())*100}%)")
     }
 
     private inline fun timer(run : () -> Unit): Long {
@@ -76,33 +89,33 @@ class TestSuite {
         println("Total test time: $totalTime ms")
     }
 
-    fun test_insert_sentecnes1_lookup_sentences1(){
-        test_template_insert_setntencex_lookup_sentencesy(sentences1, sentences1, "test_insert_sentecnes1_lookup_sentences1")
+    fun test_insert_sentences1_lookup_sentences1(){
+        test_template_insert_setntencex_lookup_sentencesy(sentences1, sentences1, "test_insert_sentences1_lookup_sentences1")
     }
-    fun test_insert_sentecnes2_lookup_sentences2(){
-        test_template_insert_setntencex_lookup_sentencesy(sentences1, sentences2, "test_insert_sentecnes2_lookup_sentences2")
-    }
-
-    fun test_insert_sentecnes1_lookup_sentences2(){
-        test_template_insert_setntencex_lookup_sentencesy(sentences1, sentences2, "test_insert_sentecnes1_lookup_sentences2")
+    fun test_insert_sentences2_lookup_sentences2(){
+        test_template_insert_setntencex_lookup_sentencesy(sentences1, sentences2, "test_insert_sentences2_lookup_sentences2")
     }
 
-    fun test_insert_sentecnes2_lookup_sentences1(){
-        test_template_insert_setntencex_lookup_sentencesy(sentences2, sentences1, "test_insert_sentecnes2_lookup_sentences1")
+    fun test_insert_sentences1_lookup_sentences2(){
+        test_template_insert_setntencex_lookup_sentencesy(sentences1, sentences2, "test_insert_sentences1_lookup_sentences2")
+    }
+
+    fun test_insert_sentences2_lookup_sentences1(){
+        test_template_insert_setntencex_lookup_sentencesy(sentences2, sentences1, "test_insert_sentences2_lookup_sentences1")
     }
 }
 
 fun main(){
     try{
         val tests = TestSuite()
-        // both should be hit ratio size/size
-        tests.test_insert_sentecnes1_lookup_sentences1()
-//        tests.test_insert_sentecnes2_lookup_sentences2()
-        //
-//        tests.test_insert_sentecnes1_lookup_sentences2()
-//        tests.test_insert_sentecnes2_lookup_sentences1()
+        // both should be 100% hit ratio
+//        tests.test_insert_sentences1_lookup_sentences1()
+//        tests.test_insert_sentences2_lookup_sentences2()
+
+        tests.test_insert_sentences1_lookup_sentences2()
+        tests.test_insert_sentences2_lookup_sentences1()
 
     } catch(e: Exception) {
-        println("\nAn error occurred: ${e.message}\n")
+        println("\nAn error occurred: \n${e.stackTraceToString()}\n")
     }
 }

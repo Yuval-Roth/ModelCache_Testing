@@ -69,7 +69,7 @@ class TestSuite {
                 hitCount++
                 val hitQuery = response.hitQuery!!.removePrefix("user: ")
                 val expectedHitQuery = getExpectedHitQuery(content)
-                if(expectedHitQuery == hitQuery) {
+                if(expectedHitQuery.lowercase() == hitQuery.lowercase()) {
                     sameHitQuery++
                     hits.add(content)
                 } else {
@@ -83,19 +83,19 @@ class TestSuite {
             if(hits.isNotEmpty()){
                 println("Expected hits:")
                 hits.forEach {
-                    println("[✔] query: $it, hit: ${getExpectedHitQuery(it)} ")
+                    println("[✔] query: $it | hit: ${getExpectedHitQuery(it)} ")
                 }
             }
             if(unexpectedHits.isNotEmpty()){
                 println("Unexpected hits:")
                 unexpectedHits.forEach {
-                    println("[?] query: ${it.first}, hit: ${it.second}, expected: ${getExpectedHitQuery(it.first)}")
+                    println("[?] query: ${it.first} | hit: ${it.second}, expected: ${getExpectedHitQuery(it.first)}")
                 }
             }
             if(misses.isNotEmpty()){
                 println("Misses:")
                 misses.forEach {
-                    println("[X] query: $it, expected: ${getExpectedHitQuery(it)}")
+                    println("[X] query: $it | expected: ${getExpectedHitQuery(it)}")
                 }
             }
         }

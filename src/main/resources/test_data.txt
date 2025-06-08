@@ -199,5 +199,4 @@
 "Who invented the telephone?","Who is credited with inventing the telephone?","Alexander Graham Bell"
 "Can you give an example of a programming language?","Would you kindly give an example of a programming language?","Python"
 "What gas do humans need to breathe?","Which gas is essential for human respiration?","Oxygen"
-"What's the square root of 144?","Would you kindly calculate the square root of 144?","12"
 "Who wrote '1984'?","Who is the author of the novel '1984'?","George Orwell"

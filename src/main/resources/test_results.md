@@ -15,7 +15,9 @@ Total test time: 33700 ms <br>
 ##### Insert sentences2 -> lookup sentences1 (pair lookup test)
 
 Setup took 0 ms<br>
+
 #### Expected hits:
+
 - [✔] **query:** Does this password work? | **hit:** Is this the correct password?
 - [✔] **query:** What are the steps to install Python on a Windows computer? | **hit:** How do I install Python on Windows?
 - [✔] **query:** Which movie do you like the most? | **hit:** What's your favorite movie?
@@ -83,12 +85,16 @@ Setup took 0 ms<br>
 - [✔] **query:** Are you a fan of sushi? | **hit:** Do you like sushi?
 - [✔] **query:** Reading the book was fascinating! | **hit:** The book was interesting to read!
 - [✔] **query:** Would you like a beverage? | **hit:** Do you want something to drink?
+
 #### Unexpected hits:
+
 - [?] **query:** Do you provide international delivery? | **hit:** Do you deliver abroad?, **expected:** Is overseas delivery an option?
 - [?] **query:** Have you ever been here before? | **hit:** Have you been here before?, **expected:** Is this your first time here?
 - [?] **query:** How many days does delivery take? | **hit:** How long does delivery usually take?, **expected:** When should I expect my package?
 - [?] **query:** Can I stop my subscription? | **hit:** Is it possible to cancel my subscription?, **expected:** How do I cancel my plan?
+
 #### Misses:
+
 - \[X] **query:** Can you explain how to make a chocolate cake? | **expected:** Give me a recipe for chocolate cake.
 - \[X] **query:** The project was completed earlier than planned. | **expected:** We finished the project ahead of schedule.
 - \[X] **query:** How is user information protected? | **expected:** How do you secure user information?
@@ -222,10 +228,12 @@ Setup took 0 ms<br>
 - \[X] **query:** Are you an animal owner? | **expected:** Do you have pets?
 
 ### Final results
+
 Hit Ratio: 71/202 (35.148518%) <br>
-Expected query hit ratio: 67/202 (33.168316%) <br> 
+Expected query hit ratio: 67/202 (33.168316%) <br>
 Test took 19960 ms <br>
 Total test time: 19960 ms <br>
+
 ----
 
 ## Test 3
@@ -237,6 +245,7 @@ Hit Ratio: 202/202 (100.0%) <br>
 Expected query hit ratio: 202/202 (100.0%) <br>
 Test took 23880 ms <br>
 Total test time: 34883 ms <br>
+
 ----
 
 ## Test 4
@@ -246,6 +255,7 @@ Total test time: 34883 ms <br>
 Setup took 0 ms
 
 #### Expected hits:
+
 - [✔] **query:** Can I borrow your charger? | **hit:** Would you lend me your charger?
 - [✔] **query:** Is it going to rain today? | **hit:** Will it rain today?
 - [✔] **query:** Do you speak Spanish? | **hit:** Can you understand Spanish?
@@ -312,12 +322,16 @@ Setup took 0 ms
 - [✔] **query:** He is good at playing the guitar. | **hit:** He plays the guitar well.
 - [✔] **query:** What is machine learning? | **hit:** Can you explain what machine learning is?
 - [✔] **query:** I'm learning how to speak French. | **hit:** I'm studying a French language.
-Unexpected hits:
+
+#### Unexpected hits:
+
 - [?] **query:** How long does delivery usually take? | **hit:** How many days does delivery take?, **expected:** What's the normal shipping time?
 - [?] **query:** Do you deliver abroad? | **hit:** Do you provide international delivery?, **expected:** Is international shipping available?
 - [?] **query:** What's the capital of France? | **hit:** Can you tell me what France's capital is?, **expected:** Do you know the capital of France?
 - [?] **query:** Have you been here before? | **hit:** Have you ever been here before?, **expected:** Is this your first visit?
-Misses:
+
+#### Misses:
+
 - \[X] **query:** Do you have pets? | **expected:** Are you an animal owner?
 - \[X] **query:** Do you want to watch a movie? | **expected:** Are you up for a film?
 - \[X] **query:** Are you tired? | **expected:** Do you feel sleepy?

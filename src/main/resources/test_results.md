@@ -1,6 +1,6 @@
 ## Test 1
 
-##### Insert sentences1 -> lookup sentences1 (self lookup test)
+##### Insert sentences1 => lookup sentences1 (self lookup test)
 
 Setup took 13568 ms <br>
 Hit Ratio: 202/202 (100.0%) <br>
@@ -12,7 +12,7 @@ Total test time: 33700 ms <br>
 
 ## Test 2
 
-##### Insert sentences2 -> lookup sentences1 (pair lookup test)
+##### Sentences1 loaded => lookup sentences2 (pair lookup test)
 
 Setup took 0 ms<br>
 
@@ -238,7 +238,7 @@ Total test time: 19960 ms <br>
 
 ## Test 3
 
-##### Insert sentences2 -> lookup sentences2 (self lookup test)
+##### Insert sentences2 => lookup sentences2 (self lookup test)
 
 Setup took 11003 ms <br>
 Hit Ratio: 202/202 (100.0%) <br>
@@ -250,7 +250,7 @@ Total test time: 34883 ms <br>
 
 ## Test 4
 
-#### Insert sentences2 -> lookup sentences1 (pair lookup test)
+#### Sentences2 loaded => lookup sentences1 (pair lookup test)
 
 Setup took 0 ms
 

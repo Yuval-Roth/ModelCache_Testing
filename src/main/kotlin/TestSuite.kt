@@ -15,7 +15,7 @@ class TestSuite {
     }
 
     private fun loadData(){
-        val regex = Regex("\"([\\w'?\\s.,:!@#$%^&*+\\-°=]*)\"")
+        val regex = Regex("\"([\\w'?\\s.,:!@#$%;/^&*+\\-°=’—]*)\"")
         val dataStream = this.javaClass.getResourceAsStream("test_data.txt")!!
         dataStream.bufferedReader().use { reader ->
             val lines = reader.readLines()
@@ -26,8 +26,10 @@ class TestSuite {
                     continue
                 }
                 val (sentence1,sentence2,response) = matches
-                sentences1.add(sentence1)
-                sentences2.add(sentence2)
+                if(! sentences1.add(sentence1) || ! sentences2.add(sentence2)){
+                    println("Duplicate sentence found: $sentence1 or $sentence2")
+                    continue
+                }
                 pairs[sentence1] = sentence2
                 pairs[sentence2] = sentence1
                 outputs[sentence1] = response
@@ -65,7 +67,7 @@ class TestSuite {
             val isHit = response.cacheHit!!
             if(isHit){
                 hitCount++
-                val hitQuery = response.hitQuery!!.removePrefix("user###")
+                val hitQuery = response.hitQuery!!.removePrefix("user: ")
                 val expectedHitQuery = getExpectedHitQuery(content)
                 if(expectedHitQuery == hitQuery) {
                     sameHitQuery++

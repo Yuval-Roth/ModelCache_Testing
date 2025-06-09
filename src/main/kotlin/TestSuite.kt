@@ -1,6 +1,8 @@
 import ModelCache as cache
 import ModelCacheRequest.*
+import com.sun.management.OperatingSystemMXBean
 import utils.fromJson
+import java.lang.management.ManagementFactory
 
 @Suppress("FunctionName")
 class TestSuite(
@@ -12,6 +14,7 @@ class TestSuite(
     val sentences2 = HashSet<String>()
     val outputs = HashMap<String,String>()
     val testsReporter = TestsReporter()
+    val osBean = ManagementFactory.getOperatingSystemMXBean() as OperatingSystemMXBean
 
     init {
         loadData()
@@ -94,6 +97,15 @@ class TestSuite(
         return output to (endTime - startTime)
     }
 
+    private fun captureSystemMetrics() {
+        val cpuUsagePercentage = osBean.cpuLoad.toFloat() * 100
+        val totalMemorySize = osBean.totalMemorySize
+        val freeMemorySize = osBean.freeMemorySize
+        val usedMemory = totalMemorySize - freeMemorySize
+        val memoryUsagePercentage = ((usedMemory.toFloat() / totalMemorySize) * 100)
+        testsReporter.logSystemMetrics(cpuUsagePercentage,memoryUsagePercentage)
+    }
+
     private fun test(
         testName: String,
         outputQueries: Boolean = false,
@@ -103,6 +115,18 @@ class TestSuite(
         lookup: () -> Unit
     ){
         print("Running test: $testName .... ")
+        var testRunning = true
+        val systemMetricsThread = Thread {
+            Thread.sleep(1000)
+            while (testRunning) {
+                captureSystemMetrics()
+                try{
+                    Thread.sleep(100)
+                } catch (e: InterruptedException) {
+                    return@Thread
+                }
+            }
+        }.apply { start() }
         testsReporter.startTest(testName,outputQueries)
         if(clearCacheBefore) cache.clear()
         val (_,totalTime) = timer {
@@ -112,6 +136,9 @@ class TestSuite(
             testsReporter.logLookupTime(lookupTime)
         }
         if(clearCacheAfter) cache.clear()
+        testRunning = false
+        systemMetricsThread.interrupt()
+        systemMetricsThread.join()
         testsReporter.endTest(totalTime)
         println("Done in ${totalTime}ms")
     }

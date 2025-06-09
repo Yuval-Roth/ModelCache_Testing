@@ -1,6 +1,6 @@
 import ModelCacheRequest.*
 import ModelCache as cache
-fun main() {
+fun cli() {
     while(true){
         try{
             println("Welcome to ModelCache example CLI")

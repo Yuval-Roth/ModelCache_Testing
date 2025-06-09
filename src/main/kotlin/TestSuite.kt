@@ -146,7 +146,7 @@ class TestSuite {
     }
 }
 
-fun main(){
+fun testSuite(){
     try{
         val tests = TestSuite()
 

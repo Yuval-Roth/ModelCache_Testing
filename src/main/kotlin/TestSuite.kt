@@ -86,9 +86,16 @@ class TestSuite {
         return output to (endTime - startTime)
     }
 
-    private fun test(testName:String, clearCacheBefore:Boolean, clearCacheAfter: Boolean, insertion: () -> Unit, lookup: () -> Unit){
+    private fun test(
+        testName: String,
+        outputQueries: Boolean = false,
+        clearCacheBefore: Boolean = false,
+        clearCacheAfter: Boolean = false,
+        insertion: () -> Unit = {},
+        lookup: () -> Unit
+    ){
         print("Running test: $testName .... ")
-        testsReporter.startTest(testName)
+        testsReporter.startTest(testName,outputQueries)
         if(clearCacheBefore) cache.clear()
         val (_,totalTime) = timer {
             val (_,insertionTime) = timer { insertion() }
@@ -107,27 +114,24 @@ class TestSuite {
 
     fun test_insert_sentences1_selfLookup_sentences1(){
         test(
-            "insert sentences1 => self-lookup sentences1",
+            testName = "insert sentences1 => self-lookup sentences1",
             clearCacheBefore = true,
-            clearCacheAfter = false,
             insertion = { insert(sentences1) },
             lookup = { lookup(sentences1){ s -> s} }
         )
     }
     fun test_sentences1_loaded_pairLookup_sentences2(){
         test(
-            "sentences1 loaded => pair-lookup sentences2",
-            clearCacheBefore = false,
+            testName = "sentences1 loaded => pair-lookup sentences2",
+            outputQueries = true,
             clearCacheAfter = true,
-            insertion = { },
             lookup = { lookup(sentences2){ s -> pairs[s]!!} }
         )
     }
     fun test_insert_sentences2_selfLookup_sentences2(){
         test(
-            "insert sentences2 => self-lookup sentences2",
+            testName = "insert sentences2 => self-lookup sentences2",
             clearCacheBefore = true,
-            clearCacheAfter = false,
             insertion = { insert(sentences2) },
             lookup = { lookup(sentences2){ s -> s} }
         )
@@ -135,9 +139,8 @@ class TestSuite {
     fun test_sentences2_loaded_pairLookup_sentences1(){
         test(
             "sentences2 loaded => pair-lookup sentences1",
-            clearCacheBefore = false,
+            outputQueries = true,
             clearCacheAfter = true,
-            insertion = { },
             lookup = { lookup(sentences1){ s -> pairs[s]!!} }
         )
     }

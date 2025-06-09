@@ -1,13 +1,11 @@
-import java.lang.StrictMath.ceil
-
 class TestsReporter {
 
     private val tests = mutableListOf<Test>()
     private val currentTest: Test
         get() = tests.last()
 
-    fun startTest(testName: String) {
-        tests.add(Test(testName))
+    fun startTest(testName: String, outputQueries: Boolean) {
+        tests.add(Test(testName,outputQueries))
     }
 
     fun endTest(totalTime: Long) {
@@ -80,30 +78,32 @@ class TestsReporter {
             report.appendLine("95th percentile latency: $p95 ms")
             report.appendLine("99th percentile latency: $p99 ms")
 
-            report.appendLine()
-            report.appendLine("Hits:")
-            report.appendLine()
-            test.hits.forEach { (query, response, time) ->
-                report.appendLine("[X] query: $query")
-                report.appendLine("    hit: $response")
-                report.appendLine("    time: $time ms")
-            }
-            report.appendLine()
-            report.appendLine("Unexpected hits:")
-            report.appendLine()
-            test.unexpectedHits.forEach { (query, response, expected, time) ->
-                report.appendLine("[?] query: $query")
-                report.appendLine("    hit: $response")
-                report.appendLine("    expected: $expected")
-                report.appendLine("    time: $time ms")
-            }
-            report.appendLine()
-            report.appendLine("Misses:")
-            report.appendLine()
-            test.misses.forEach { (query, expected, time) ->
-                report.appendLine("[ ] query: $query")
-                report.appendLine("    expected: $expected")
-                report.appendLine("    time: $time ms")
+            if(test.outputQueries){
+                report.appendLine()
+                report.appendLine("Hits:")
+                report.appendLine()
+                test.hits.forEach { (query, response, time) ->
+                    report.appendLine("[X] query: $query")
+                    report.appendLine("    hit: $response")
+                    report.appendLine("    time: $time ms")
+                }
+                report.appendLine()
+                report.appendLine("Unexpected hits:")
+                report.appendLine()
+                test.unexpectedHits.forEach { (query, response, expected, time) ->
+                    report.appendLine("[?] query: $query")
+                    report.appendLine("    hit: $response")
+                    report.appendLine("    expected: $expected")
+                    report.appendLine("    time: $time ms")
+                }
+                report.appendLine()
+                report.appendLine("Misses:")
+                report.appendLine()
+                test.misses.forEach { (query, expected, time) ->
+                    report.appendLine("[ ] query: $query")
+                    report.appendLine("    expected: $expected")
+                    report.appendLine("    time: $time ms")
+                }
             }
             report.appendLine()
         }
@@ -113,6 +113,7 @@ class TestsReporter {
 
     private data class Test(
         val testName: String,
+        val outputQueries: Boolean,
         var hitCount: Int = 0,
         var expectedQueryHitCount: Int = 0,
         var queryCount: Int = 0,

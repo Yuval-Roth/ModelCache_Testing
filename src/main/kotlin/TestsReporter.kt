@@ -54,7 +54,7 @@ class TestsReporter {
 
             // Calculate metrics
             val hitRatio = (test.hitCount.toFloat() / test.queryCount) * 100
-            val expectedHitQueryRatio = (test.expectedQueryHitCount.toFloat() / test.hitCount) * 100
+            val expectedHitQueryRatio = if(test.hitCount == 0) 0 else (test.expectedQueryHitCount.toFloat() / test.hitCount) * 100
             val throughput = test.queryCount / (test.lookupTime / 1000f)
             val meanLatency = test.queryTimes.average().toFloat()
             val sortedQueryTimes = test.queryTimes.sorted()
@@ -69,14 +69,14 @@ class TestsReporter {
             report.appendLine("Statistics:")
             report.appendLine()
             report.appendLine("Insertion time: ${test.insertionTime} ms")
-            report.appendLine("Lookup time: ${test.lookupTime} ms")
+            report.appendLine("Querying time: ${test.lookupTime} ms")
             report.appendLine("Total time: ${test.totalTime} ms")
             report.appendLine("Hit ratio: ${test.hitCount}/${test.queryCount} ($hitRatio%)")
             report.appendLine("Expected query hit ratio: ${test.expectedQueryHitCount}/${test.hitCount} ($expectedHitQueryRatio%)")
             report.appendLine("Throughput: $throughput queries/second")
-            report.appendLine("Mean request latency: $meanLatency ms")
-            report.appendLine("95th percentile latency: $p95 ms")
-            report.appendLine("99th percentile latency: $p99 ms")
+            report.appendLine("Mean query latency: $meanLatency ms")
+            report.appendLine("95th percentile query latency: $p95 ms")
+            report.appendLine("99th percentile query latency: $p99 ms")
 
             if(test.outputQueries){
                 report.appendLine()

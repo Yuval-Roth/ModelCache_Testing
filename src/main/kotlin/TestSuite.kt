@@ -3,8 +3,10 @@ import ModelCacheRequest.*
 import utils.fromJson
 
 @Suppress("FunctionName")
-class TestSuite {
-
+class TestSuite(
+    val bulkInsertSupported: Boolean,
+    val queryPrefix: String
+) {
     val pairs = HashMap<String,String>()
     val sentences1 = HashSet<String>()
     val sentences2 = HashSet<String>()
@@ -45,7 +47,13 @@ class TestSuite {
 
     private fun insert(sentences: Set<String>){
         val queries  = buildQueries(sentences)
-        cache.insert(queries)
+        if(bulkInsertSupported){
+            cache.insert(queries)
+        } else {
+            for(query in queries){
+                cache.insert(listOf(query))
+            }
+        }
     }
 
     private fun buildQueries(sentences: Set<String>): List<Query> {
@@ -66,7 +74,7 @@ class TestSuite {
             val response = fromJson<Response>(returned)
             val isHit = response.cacheHit!!
             if(isHit){
-                val hitQuery = response.hitQuery!!.removePrefix("user: ")
+                val hitQuery = response.hitQuery!!.removePrefix(queryPrefix)
                 val expectedHitQuery = getExpectedHitQuery(content)
                 if(expectedHitQuery.lowercase() == hitQuery.lowercase()) {
                     testsReporter.logHit(content,hitQuery,time)
@@ -123,7 +131,7 @@ class TestSuite {
     fun test_sentences1_loaded_pairLookup_sentences2(){
         test(
             testName = "sentences1 loaded => pair-lookup sentences2",
-            outputQueries = true,
+            outputQueries = false, // TODO: change to true when we want to see the output queries
             clearCacheAfter = true,
             lookup = { lookup(sentences2){ s -> pairs[s]!!} }
         )
@@ -139,16 +147,16 @@ class TestSuite {
     fun test_sentences2_loaded_pairLookup_sentences1(){
         test(
             "sentences2 loaded => pair-lookup sentences1",
-            outputQueries = true,
+            outputQueries = false, // TODO: change to true when we want to see the output queries
             clearCacheAfter = true,
             lookup = { lookup(sentences1){ s -> pairs[s]!!} }
         )
     }
 }
 
-fun testSuite(){
+fun testSuite(queryPrefix: String, bulkInsertSupported: Boolean) {
     try{
-        val tests = TestSuite()
+        val tests = TestSuite(bulkInsertSupported, queryPrefix)
 
         tests.test_insert_sentences1_selfLookup_sentences1()
         tests.test_sentences1_loaded_pairLookup_sentences2()

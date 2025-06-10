@@ -5,7 +5,7 @@ import ModelCacheRequest.Type
 import utils.RestApiClient
 import utils.toJson
 
-private const val URI = "http://localhost:5000/modelcache"
+private const val URI = "http://127.0.0.1:5000/modelcache"
 
 object ModelCache {
 
@@ -37,8 +37,8 @@ object ModelCache {
         val response = RestApiClient()
             .withUri(URI)
             .withHeader("Content-Type", "application/json")
-            .withBody(request.toJson())
-            .withPost()
+            .withPost(request.toJson())
+            .withHTTP1_1() // This is needed if we're using uvicorn (fastapi) as the server
             .send()
         return response
     }

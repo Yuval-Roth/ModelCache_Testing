@@ -15,6 +15,7 @@ class RestApiClient {
     private val params: MutableMap<String, String> = HashMap()
     private var body: String = ""
     private var isPost = false
+    private var isHTTP1_1 = false
 
     /**
      * @throws IOException if there is an error sending the request
@@ -41,6 +42,7 @@ class RestApiClient {
                     header("Content-Type", "application/json")
                 }
                 if (isPost) POST(HttpRequest.BodyPublishers.ofString(body))
+                if (isHTTP1_1) version(HttpClient.Version.HTTP_1_1)
                 headers.forEach { (name, value) -> header(name, value) }
             }.build()
 
@@ -51,19 +53,11 @@ class RestApiClient {
     }
 
     /**
-     * Set the body of the request. Must be used with [withPost] to have
-     * any effect
+     * Set the request method to POST.
      */
-    fun withBody(body: String) = apply {
-        this.body = body
-    }
-
-    /**
-     * Set the request method to POST. If [withBody] is not called,
-     * the body will be empty
-     */
-    fun withPost() = apply {
+    fun withPost(body: String = "") = apply {
         isPost = true
+        this.body = body
     }
 
     /**
@@ -119,5 +113,9 @@ class RestApiClient {
     @SafeVarargs
     fun withParams(vararg params: Pair<String, String>) = apply {
         Arrays.stream(params).forEach { p: Pair<String, String> -> this.withParam(p.first, p.second) }
+    }
+
+    fun withHTTP1_1() = apply {
+        isHTTP1_1 = true
     }
 }

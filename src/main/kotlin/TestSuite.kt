@@ -98,7 +98,11 @@ class TestSuite(
     }
 
     private fun captureSystemMetrics() {
-        val cpuUsagePercentage = osBean.cpuLoad.toFloat() * 100
+        var cpuUsagePercentage: Float
+        do {
+            cpuUsagePercentage = (osBean.cpuLoad * 100).toFloat()
+        } while (cpuUsagePercentage < 0)
+
         val totalMemorySize = osBean.totalMemorySize
         val freeMemorySize = osBean.freeMemorySize
         val usedMemory = totalMemorySize - freeMemorySize

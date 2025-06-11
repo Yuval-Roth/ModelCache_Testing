@@ -24,14 +24,16 @@ fun main() {
                         println("Running test suite for new system ....")
                         testSuite(
                             queryPrefix = "user: ",
-                            bulkInsertSupported = true
+                            bulkInsertSupported = true,
+                            serverType = TODO()
                         )
                     }
                     "2" -> {
                         println("Running test suite for old system ....")
                         testSuite(
                             queryPrefix = "user###",
-                            bulkInsertSupported = false
+                            bulkInsertSupported = false,
+                            serverType= TODO()
                         )
                     }
                     else -> println("Invalid choice. Please try again.")

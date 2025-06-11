@@ -1,13 +1,19 @@
+import ModelCache
 import ModelCache as cache
 import ModelCacheRequest.*
 import com.sun.management.OperatingSystemMXBean
+import utils.RestApiClient
+import utils.WebSocketClient
 import utils.fromJson
+import utils.toJson
 import java.lang.management.ManagementFactory
+import java.net.URI
 
 @Suppress("FunctionName")
 class TestSuite(
     val bulkInsertSupported: Boolean,
-    val queryPrefix: String
+    val queryPrefix: String,
+    val serverType: String
 ) {
     val pairs = HashMap<String,String>()
     val sentences1 = HashSet<String>()
@@ -15,9 +21,19 @@ class TestSuite(
     val outputs = HashMap<String,String>()
     val testsReporter = TestsReporter()
     val osBean = ManagementFactory.getOperatingSystemMXBean() as OperatingSystemMXBean
+    val cache: ModelCache
+    val ws: WebSocketClient by lazy {
+        WebSocketClient(URI("ws://$HOST")).apply{ connect() }
+    }
 
     init {
         loadData()
+        cache = when(serverType.lowercase()) {
+            "flask" -> ModelCache.flask()
+            "fastapi" -> ModelCache.fastAPI()
+            "websocket" -> ModelCache.websocket(ws)
+            else -> throw IllegalArgumentException("Invalid server type: $serverType")
+        }
     }
 
     fun getReport(): String {
@@ -48,17 +64,6 @@ class TestSuite(
         }
     }
 
-    private fun insert(sentences: Set<String>){
-        val queries  = buildQueries(sentences)
-        if(bulkInsertSupported){
-            cache.insert(queries)
-        } else {
-            for(query in queries){
-                cache.insert(listOf(query))
-            }
-        }
-    }
-
     private fun buildQueries(sentences: Set<String>): List<Query> {
         val queries = mutableListOf<Query>()
         for (sentence in sentences) {
@@ -69,12 +74,43 @@ class TestSuite(
         return queries
     }
 
-    private fun lookup(sentences: Set<String>, getExpectedHitQuery: (String) -> String) {
+    private fun insert(sentences: Set<String>) = when(serverType.lowercase()) {
+        "websocket" -> insertWs(sentences)
+        "flask", "fastapi" -> insertRest(sentences)
+        else -> throw IllegalArgumentException("Invalid server type: $serverType")
+    }
+
+    private fun insertWs(sentences: Set<String>){
+        TODO()
+    }
+
+    private fun insertRest(sentences: Set<String>){
+        val queries  = buildQueries(sentences)
+        if(bulkInsertSupported){
+            cache.insert(queries)
+        } else {
+            for(query in queries){
+                cache.insert(listOf(query))
+            }
+        }
+    }
+
+    private fun lookup(sentences: Set<String>, getExpectedHitQuery: (String) -> String) = when(serverType.lowercase()) {
+        "websocket" -> lookupWs(sentences,getExpectedHitQuery)
+        "flask", "fastapi" -> lookupRest(sentences,getExpectedHitQuery)
+        else -> throw IllegalArgumentException("Invalid server type: $serverType")
+    }
+
+    private fun lookupWs(sentences: Set<String>, getExpectedHitQuery: (String) -> String) {
+        TODO()
+    }
+
+    private fun lookupRest(sentences: Set<String>, getExpectedHitQuery: (String) -> String) {
         val queries = buildQueries(sentences)
         for(query in queries){
             val content = query.query[0].content
             val (returned,time) = timer { cache.query(query.query) }
-            val response = fromJson<Response>(returned)
+            val response = fromJson<Response>(returned!!)
             val isHit = response.cacheHit!!
             if(isHit){
                 val hitQuery = response.hitQuery!!.removePrefix(queryPrefix)
@@ -185,9 +221,9 @@ class TestSuite(
     }
 }
 
-fun testSuite(queryPrefix: String, bulkInsertSupported: Boolean) {
+fun testSuite(queryPrefix: String, bulkInsertSupported: Boolean, serverType: String) {
     try{
-        val tests = TestSuite(bulkInsertSupported, queryPrefix)
+        val tests = TestSuite(bulkInsertSupported, queryPrefix, serverType)
 
         tests.test_insert_sentences1_selfLookup_sentences1()
         tests.test_sentences1_loaded_pairLookup_sentences2()

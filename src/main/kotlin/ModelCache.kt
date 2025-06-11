@@ -3,13 +3,17 @@ import ModelCacheRequest.QueryEntry
 import ModelCacheRequest.RemoveType
 import ModelCacheRequest.Type
 import utils.RestApiClient
+import utils.WebSocketClient
 import utils.toJson
+import java.util.UUID
 
-private const val URI = "http://127.0.0.1:5000/modelcache"
+const val HOST = "localhost:5000/modelcache"
 
-object ModelCache {
+class ModelCache(
+    private val sendRequestFunction: (ModelCacheRequest) -> String?
+) {
 
-    fun insert(chatInfo: List<Query>): String {
+    fun insert(chatInfo: List<Query>): String? {
         val request = ModelCacheRequest(
             type = Type.INSERT,
             chatInfo = chatInfo
@@ -17,7 +21,7 @@ object ModelCache {
         return sendRequest(request)
     }
 
-    fun query(query: List<QueryEntry>): String {
+    fun query(query: List<QueryEntry>): String? {
         val request = ModelCacheRequest(
             type = Type.QUERY,
             query = query
@@ -25,7 +29,7 @@ object ModelCache {
         return sendRequest(request)
     }
 
-    fun clear(): String {
+    fun clear(): String? {
         val request = ModelCacheRequest(
             type = Type.REMOVE,
             removeType = RemoveType.TRUNCATE_BY_MODEL
@@ -33,13 +37,35 @@ object ModelCache {
         return sendRequest(request)
     }
 
-    private fun sendRequest(request: ModelCacheRequest): String {
-        val response = RestApiClient()
-            .withUri(URI)
-            .withHeader("Content-Type", "application/json")
-            .withPost(request.toJson())
-            .withHTTP1_1() // This is needed if we're using uvicorn (fastapi) as the server
-            .send()
-        return response
+    private fun sendRequest(request: ModelCacheRequest): String? {
+        return sendRequestFunction(request)
+    }
+
+    companion object {
+        fun flask() = ModelCache { request ->
+            val response = RestApiClient()
+                .withUri("http://$HOST")
+                .withHeader("Content-Type", "application/json")
+                .withPost(request.toJson())
+                .send()
+            return@ModelCache response
+        }
+        fun fastAPI() = ModelCache { request ->
+            val response = RestApiClient()
+                .withUri("http://$HOST")
+                .withHeader("Content-Type", "application/json")
+                .withPost(request.toJson())
+                .withHTTP1_1() // uvicorn uses HTTP/1.1
+                .send()
+            return@ModelCache response
+        }
+        fun websocket(ws: WebSocketClient) = ModelCache { request ->
+            val toSend = WebSocketRequest(
+                UUID.randomUUID().toString(),
+                request
+            ).toJson()
+            ws.send(toSend)
+            null
+        }
     }
 }

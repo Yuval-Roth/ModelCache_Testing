@@ -13,6 +13,10 @@ import java.util.concurrent.Executors
  */
 class WebSocketClient (serverUri: URI) : org.java_websocket.client.WebSocketClient(serverUri) {
 
+    init {
+        connectionLostTimeout = -1
+    }
+
     private val messagesQueue : MutableList<String> = mutableListOf()
     private val lock = Object()
     private var interrupted : Boolean = false

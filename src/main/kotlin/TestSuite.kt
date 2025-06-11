@@ -1,13 +1,11 @@
-import ModelCache
-import ModelCache as cache
 import ModelCacheRequest.*
 import com.sun.management.OperatingSystemMXBean
-import utils.RestApiClient
 import utils.WebSocketClient
 import utils.fromJson
-import utils.toJson
 import java.lang.management.ManagementFactory
 import java.net.URI
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 
 @Suppress("FunctionName")
 class TestSuite(
@@ -23,7 +21,7 @@ class TestSuite(
     val osBean = ManagementFactory.getOperatingSystemMXBean() as OperatingSystemMXBean
     val cache: ModelCache
     val ws: WebSocketClient by lazy {
-        WebSocketClient(URI("ws://$HOST")).apply{ connect() }
+        WebSocketClient(URI("ws://$HOST")).apply{ connectBlocking() }
     }
 
     init {
@@ -74,14 +72,16 @@ class TestSuite(
         return queries
     }
 
-    private fun insert(sentences: Set<String>) = when(serverType.lowercase()) {
+    private fun insert(sentences: Set<String>) = when(serverType.lowercase()){
         "websocket" -> insertWs(sentences)
         "flask", "fastapi" -> insertRest(sentences)
-        else -> throw IllegalArgumentException("Invalid server type: $serverType")
+        else  -> throw IllegalArgumentException("Invalid server type: $serverType")
     }
 
     private fun insertWs(sentences: Set<String>){
-        TODO()
+        val queries = buildQueries(sentences)
+        cache.insert(queries)
+        ws.nextMessageBlocking()
     }
 
     private fun insertRest(sentences: Set<String>){
@@ -95,14 +95,24 @@ class TestSuite(
         }
     }
 
-    private fun lookup(sentences: Set<String>, getExpectedHitQuery: (String) -> String) = when(serverType.lowercase()) {
+    private fun BasicLookup(sentences: Set<String>, getExpectedHitQuery: (String) -> String) = when(serverType.lowercase()) {
         "websocket" -> lookupWs(sentences,getExpectedHitQuery)
         "flask", "fastapi" -> lookupRest(sentences,getExpectedHitQuery)
         else -> throw IllegalArgumentException("Invalid server type: $serverType")
     }
 
     private fun lookupWs(sentences: Set<String>, getExpectedHitQuery: (String) -> String) {
-        TODO()
+        val queries = buildQueries(sentences)
+        for(query in queries){
+            val content = query.query[0].content
+            val (returned,time) = timer {
+                cache.query(query.query)
+                ws.nextMessageBlocking()
+            }
+            val wsResponse = fromJson<WebSocketResponse>(returned)
+            val response = wsResponse.result
+            handleQueryResponse(response, getExpectedHitQuery, content, time)
+        }
     }
 
     private fun lookupRest(sentences: Set<String>, getExpectedHitQuery: (String) -> String) {
@@ -110,19 +120,28 @@ class TestSuite(
         for(query in queries){
             val content = query.query[0].content
             val (returned,time) = timer { cache.query(query.query) }
-            val response = fromJson<Response>(returned!!)
-            val isHit = response.cacheHit!!
-            if(isHit){
-                val hitQuery = response.hitQuery!!.removePrefix(queryPrefix)
-                val expectedHitQuery = getExpectedHitQuery(content)
-                if(expectedHitQuery.lowercase() == hitQuery.lowercase()) {
-                    testsReporter.logHit(content,hitQuery,time)
-                } else {
-                    testsReporter.logUnexpectedHit(content, hitQuery, expectedHitQuery, time)
-                }
+            val response = fromJson<Response>(returned)
+            handleQueryResponse(response, getExpectedHitQuery, content, time)
+        }
+    }
+
+    private fun handleQueryResponse(
+        response: Response,
+        getExpectedHitQuery: (String) -> String,
+        content: String,
+        time: Long
+    ) {
+        val isHit = response.cacheHit!!
+        if (isHit) {
+            val hitQuery = response.hitQuery!!.removePrefix(queryPrefix)
+            val expectedHitQuery = getExpectedHitQuery(content)
+            if (expectedHitQuery.lowercase() == hitQuery.lowercase()) {
+                testsReporter.logHit(content, hitQuery, time)
             } else {
-                testsReporter.logMiss(content,getExpectedHitQuery(content),time)
+                testsReporter.logUnexpectedHit(content, hitQuery, expectedHitQuery, time)
             }
+        } else {
+            testsReporter.logMiss(content, getExpectedHitQuery(content), time)
         }
     }
 
@@ -168,14 +187,20 @@ class TestSuite(
             }
         }.apply { start() }
         testsReporter.startTest(testName,outputQueries)
-        if(clearCacheBefore) cache.clear()
+        if(clearCacheBefore){
+            cache.clear()
+            if(serverType == "websocket") ws.nextMessageBlocking()
+        }
         val (_,totalTime) = timer {
             val (_,insertionTime) = timer { insertion() }
             testsReporter.logInsertionTime(insertionTime)
             val (_,lookupTime) = timer { lookup() }
             testsReporter.logLookupTime(lookupTime)
         }
-        if(clearCacheAfter) cache.clear()
+        if(clearCacheAfter){
+            cache.clear()
+            if(serverType == "websocket") ws.nextMessageBlocking()
+        }
         testRunning = false
         systemMetricsThread.interrupt()
         systemMetricsThread.join()
@@ -192,7 +217,7 @@ class TestSuite(
             testName = "insert sentences1 => self-lookup sentences1",
             clearCacheBefore = true,
             insertion = { insert(sentences1) },
-            lookup = { lookup(sentences1){ s -> s} }
+            lookup = { BasicLookup(sentences1){ s -> s} }
         )
     }
     fun test_sentences1_loaded_pairLookup_sentences2(){
@@ -200,7 +225,7 @@ class TestSuite(
             testName = "sentences1 loaded => pair-lookup sentences2",
             outputQueries = false, // TODO: change to true when we want to see the output queries
             clearCacheAfter = true,
-            lookup = { lookup(sentences2){ s -> pairs[s]!!} }
+            lookup = { BasicLookup(sentences2){ s -> pairs[s]!!} }
         )
     }
     fun test_insert_sentences2_selfLookup_sentences2(){
@@ -208,7 +233,7 @@ class TestSuite(
             testName = "insert sentences2 => self-lookup sentences2",
             clearCacheBefore = true,
             insertion = { insert(sentences2) },
-            lookup = { lookup(sentences2){ s -> s} }
+            lookup = { BasicLookup(sentences2){ s -> s} }
         )
     }
     fun test_sentences2_loaded_pairLookup_sentences1(){
@@ -216,7 +241,7 @@ class TestSuite(
             "sentences2 loaded => pair-lookup sentences1",
             outputQueries = false, // TODO: change to true when we want to see the output queries
             clearCacheAfter = true,
-            lookup = { lookup(sentences1){ s -> pairs[s]!!} }
+            lookup = { BasicLookup(sentences1){ s -> pairs[s]!!} }
         )
     }
 }

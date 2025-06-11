@@ -10,10 +10,10 @@ import java.util.UUID
 const val HOST = "localhost:5000/modelcache"
 
 class ModelCache(
-    private val sendRequestFunction: (ModelCacheRequest) -> String?
+    private val sendRequestFunction: (ModelCacheRequest) -> String
 ) {
 
-    fun insert(chatInfo: List<Query>): String? {
+    fun insert(chatInfo: List<Query>): String {
         val request = ModelCacheRequest(
             type = Type.INSERT,
             chatInfo = chatInfo
@@ -21,7 +21,7 @@ class ModelCache(
         return sendRequest(request)
     }
 
-    fun query(query: List<QueryEntry>): String? {
+    fun query(query: List<QueryEntry>): String {
         val request = ModelCacheRequest(
             type = Type.QUERY,
             query = query
@@ -29,7 +29,7 @@ class ModelCache(
         return sendRequest(request)
     }
 
-    fun clear(): String? {
+    fun clear(): String {
         val request = ModelCacheRequest(
             type = Type.REMOVE,
             removeType = RemoveType.TRUNCATE_BY_MODEL
@@ -37,7 +37,7 @@ class ModelCache(
         return sendRequest(request)
     }
 
-    private fun sendRequest(request: ModelCacheRequest): String? {
+    private fun sendRequest(request: ModelCacheRequest): String {
         return sendRequestFunction(request)
     }
 
@@ -60,12 +60,10 @@ class ModelCache(
             return@ModelCache response
         }
         fun websocket(ws: WebSocketClient) = ModelCache { request ->
-            val toSend = WebSocketRequest(
-                UUID.randomUUID().toString(),
-                request
-            ).toJson()
+            val id = UUID.randomUUID().toString()
+            val toSend = WebSocketRequest(id, request).toJson()
             ws.send(toSend)
-            null
+            id
         }
     }
 }

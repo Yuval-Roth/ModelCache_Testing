@@ -150,11 +150,6 @@ class TestsReporter {
         val cpuUsages: MutableList<Float> = mutableListOf(),
     )
 
-    data class SystemMetrics(
-        val cpuLoad: Float,
-        val usedMemory: Long
-    )
-
     private fun percentileLong(sortedValues: List<Long>, percentile: Float): Float {
         if (sortedValues.isEmpty()) return 0f
         val index = percentile * (sortedValues.size - 1)

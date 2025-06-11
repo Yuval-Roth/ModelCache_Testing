@@ -21,19 +21,47 @@ fun main() {
                 val bulkInsertChoice = readlnOrNull() ?: continue
                 when (bulkInsertChoice) {
                     "1" -> {
+                        println("Select target server:")
+                        println("1. flask")
+                        println("2. fastAPI")
+                        println("3. Websocket")
+                        print(">> ")
+                        val serverChoice = readlnOrNull() ?: continue
+                        val serverType = when (serverChoice){
+                            "1" -> "flask"
+                            "2" -> "fastapi"
+                            "3" -> "websocket"
+                            else -> {
+                                println("Invalid choice. Please try again.")
+                                continue
+                            }
+                        }
                         println("Running test suite for new system ....")
                         testSuite(
                             queryPrefix = "user: ",
                             bulkInsertSupported = true,
-                            serverType = TODO()
+                            serverType = serverType
                         )
                     }
                     "2" -> {
+                        println("Select target server:")
+                        println("1. flask")
+                        println("2. fastAPI")
+                        print(">> ")
+                        val serverChoice = readlnOrNull() ?: continue
+                        val serverType = when (serverChoice){
+                            "1" -> "flask"
+                            "2" -> "fastapi"
+                            else -> {
+                                println("Invalid choice. Please try again.")
+                                continue
+                            }
+                        }
                         println("Running test suite for old system ....")
                         testSuite(
-                            queryPrefix = "user###",
-                            bulkInsertSupported = false,
-                            serverType= TODO()
+                            queryPrefix = "user: ",
+                            bulkInsertSupported = true,
+                            serverType = serverType
                         )
                     }
                     else -> println("Invalid choice. Please try again.")

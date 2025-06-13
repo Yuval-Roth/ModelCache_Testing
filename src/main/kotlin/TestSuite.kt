@@ -114,6 +114,7 @@ class TestSuite(
                     queriesLock.acquire()
                     if (queries.isEmpty()) {
                         queriesLock.release()
+                        ws.closeBlocking()
                         return@Thread
                     }
                     val query = queries.removeFirst()

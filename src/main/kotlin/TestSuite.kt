@@ -4,14 +4,14 @@ import utils.WebSocketClient
 import utils.fromJson
 import java.lang.management.ManagementFactory
 import java.net.URI
-import java.util.UUID
-import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.Semaphore
 
 @Suppress("FunctionName")
 class TestSuite(
     val bulkInsertSupported: Boolean,
     val queryPrefix: String,
-    val serverType: String
+    val serverType: String,
+    val workers: Int
 ) {
     val pairs = HashMap<String,String>()
     val sentences1 = HashSet<String>()
@@ -95,33 +95,75 @@ class TestSuite(
         }
     }
 
-    private fun BasicLookup(sentences: Set<String>, getExpectedHitQuery: (String) -> String) = when(serverType.lowercase()) {
-        "websocket" -> lookupWs(sentences,getExpectedHitQuery)
-        "flask", "fastapi" -> lookupRest(sentences,getExpectedHitQuery)
+    private fun BasicLookup(sentences: Set<String>, workers: Int, getExpectedHitQuery: (String) -> String) = when(serverType.lowercase()) {
+        "websocket" -> lookupWs(sentences, workers,getExpectedHitQuery)
+        "flask", "fastapi" -> lookupRest(sentences, workers,getExpectedHitQuery)
         else -> throw IllegalArgumentException("Invalid server type: $serverType")
     }
 
-    private fun lookupWs(sentences: Set<String>, getExpectedHitQuery: (String) -> String) {
-        val queries = buildQueries(sentences)
-        for(query in queries){
-            val content = query.query[0].content
-            val (returned,time) = timer {
-                cache.query(query.query)
-                ws.nextMessageBlocking()
-            }
-            val wsResponse = fromJson<WebSocketResponse>(returned)
-            val response = wsResponse.result
-            handleQueryResponse(response, getExpectedHitQuery, content, time)
+    private fun lookupWs(sentences: Set<String>, workers: Int, getExpectedHitQuery: (String) -> String) {
+        val queries = buildQueries(sentences) as MutableList
+        val queriesLock = Semaphore(1, true)
+        val reportsLock = Semaphore(1, true)
+        val threads = mutableListOf<Thread>()
+        repeat(workers) {
+            val t = Thread {
+                val ws = WebSocketClient(URI("ws://$HOST")).apply{ connectBlocking() }
+                val cache = ModelCache.websocket(ws)
+                while(true){
+                    queriesLock.acquire()
+                    if (queries.isEmpty()) {
+                        queriesLock.release()
+                        return@Thread
+                    }
+                    val query = queries.removeFirst()
+                    queriesLock.release()
+                    val content = query.query[0].content
+                    val (returned,time) = timer {
+                        cache.query(query.query)
+                        ws.nextMessageBlocking()
+                    }
+                    val wsResponse = fromJson<WebSocketResponse>(returned)
+                    val response = wsResponse.result
+                    reportsLock.acquire()
+                    handleQueryResponse(response, getExpectedHitQuery, content, time)
+                    reportsLock.release()
+                }
+            }.apply{ start() }
+            threads.add(t)
+        }
+        for (thread in threads) {
+            thread.join()
         }
     }
 
-    private fun lookupRest(sentences: Set<String>, getExpectedHitQuery: (String) -> String) {
-        val queries = buildQueries(sentences)
-        for(query in queries){
-            val content = query.query[0].content
-            val (returned,time) = timer { cache.query(query.query) }
-            val response = fromJson<Response>(returned)
-            handleQueryResponse(response, getExpectedHitQuery, content, time)
+    private fun lookupRest(sentences: Set<String>, workers: Int, getExpectedHitQuery: (String) -> String) {
+        val queries = buildQueries(sentences) as MutableList
+        val queriesLock = Semaphore(1, true)
+        val reportsLock = Semaphore(1, true)
+        val threads = mutableListOf<Thread>()
+        repeat(workers) {
+            val t = Thread {
+                while(true){
+                    queriesLock.acquire()
+                    if (queries.isEmpty()) {
+                        queriesLock.release()
+                        return@Thread
+                    }
+                    val query = queries.removeFirst()
+                    queriesLock.release()
+                    val content = query.query[0].content
+                    val (returned,time) = timer { cache.query(query.query) }
+                    val response = fromJson<Response>(returned)
+                    reportsLock.acquire()
+                    handleQueryResponse(response, getExpectedHitQuery, content, time)
+                    reportsLock.release()
+                }
+            }.apply {start()}
+            threads.add(t)
+        }
+        for (thread in threads) {
+            thread.join()
         }
     }
 
@@ -217,7 +259,7 @@ class TestSuite(
             testName = "insert sentences1 => self-lookup sentences1",
             clearCacheBefore = true,
             insertion = { insert(sentences1) },
-            lookup = { BasicLookup(sentences1){ s -> s} }
+            lookup = { BasicLookup(sentences1,workers){ s -> s} }
         )
     }
     fun test_sentences1_loaded_pairLookup_sentences2(){
@@ -225,7 +267,7 @@ class TestSuite(
             testName = "sentences1 loaded => pair-lookup sentences2",
             outputQueries = false, // TODO: change to true when we want to see the output queries
             clearCacheAfter = true,
-            lookup = { BasicLookup(sentences2){ s -> pairs[s]!!} }
+            lookup = { BasicLookup(sentences2,workers){ s -> pairs[s]!!} }
         )
     }
     fun test_insert_sentences2_selfLookup_sentences2(){
@@ -233,7 +275,7 @@ class TestSuite(
             testName = "insert sentences2 => self-lookup sentences2",
             clearCacheBefore = true,
             insertion = { insert(sentences2) },
-            lookup = { BasicLookup(sentences2){ s -> s} }
+            lookup = { BasicLookup(sentences2,workers){ s -> s} }
         )
     }
     fun test_sentences2_loaded_pairLookup_sentences1(){
@@ -241,14 +283,14 @@ class TestSuite(
             "sentences2 loaded => pair-lookup sentences1",
             outputQueries = false, // TODO: change to true when we want to see the output queries
             clearCacheAfter = true,
-            lookup = { BasicLookup(sentences1){ s -> pairs[s]!!} }
+            lookup = { BasicLookup(sentences1,workers){ s -> pairs[s]!!} }
         )
     }
 }
 
 fun testSuite(queryPrefix: String, bulkInsertSupported: Boolean, serverType: String) {
     try{
-        val tests = TestSuite(bulkInsertSupported, queryPrefix, serverType)
+        val tests = TestSuite(bulkInsertSupported, queryPrefix, serverType,2)
 
         tests.test_insert_sentences1_selfLookup_sentences1()
         tests.test_sentences1_loaded_pairLookup_sentences2()

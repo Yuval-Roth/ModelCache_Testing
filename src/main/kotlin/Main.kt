@@ -59,8 +59,8 @@ fun main() {
                         }
                         println("Running test suite for old system ....")
                         testSuite(
-                            queryPrefix = "user: ",
-                            bulkInsertSupported = true,
+                            queryPrefix = "user###",
+                            bulkInsertSupported = false,
                             serverType = serverType
                         )
                     }

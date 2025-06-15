@@ -60,7 +60,7 @@ class TestsReporter {
             index, test ->
 
             // Calculate metrics
-            val hitRatio = (test.hitCount.toFloat() / test.queryCount) * 100
+            val hitRatio = if(test.queryCount == 0) 0 else (test.hitCount.toFloat() / test.queryCount) * 100
             val expectedHitQueryRatio = if(test.hitCount == 0) 0 else (test.expectedQueryHitCount.toFloat() / test.hitCount) * 100
             val throughput = test.queryCount / (test.lookupTime / 1000f)
             val meanLatency = test.queryTimes.average().toFloat()

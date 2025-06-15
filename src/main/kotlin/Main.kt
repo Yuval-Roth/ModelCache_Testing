@@ -1,77 +1,59 @@
-
-
-class Main {
-}
-
 fun main() {
     while(true){
         println("Pick an option:")
         println("1. Run CLI")
         println("2. Run Test Suite")
         println("3. Exit")
-        print(">> ")
-        val choice = readlnOrNull() ?: continue
+        val choice = getChoice(3)
         when (choice) {
-            "1" -> cli()
-            "2" -> {
-                println("Run tests for:")
-                println("1. New system")
-                println("2. Old system")
-                print(">> ")
-                val bulkInsertChoice = readlnOrNull() ?: continue
-                when (bulkInsertChoice) {
-                    "1" -> {
-                        println("Select target server:")
-                        println("1. flask")
-                        println("2. fastAPI")
-                        println("3. Websocket")
-                        print(">> ")
-                        val serverChoice = readlnOrNull() ?: continue
-                        val serverType = when (serverChoice){
-                            "1" -> "flask"
-                            "2" -> "fastapi"
-                            "3" -> "websocket"
-                            else -> {
-                                println("Invalid choice. Please try again.")
-                                continue
-                            }
-                        }
-                        println("Running test suite for new system ....")
-                        testSuite(
-                            queryPrefix = "user: ",
-                            bulkInsertSupported = true,
-                            serverType = serverType
-                        )
-                    }
-                    "2" -> {
-                        println("Select target server:")
-                        println("1. flask")
-                        println("2. fastAPI")
-                        print(">> ")
-                        val serverChoice = readlnOrNull() ?: continue
-                        val serverType = when (serverChoice){
-                            "1" -> "flask"
-                            "2" -> "fastapi"
-                            else -> {
-                                println("Invalid choice. Please try again.")
-                                continue
-                            }
-                        }
-                        println("Running test suite for old system ....")
-                        testSuite(
-                            queryPrefix = "user###",
-                            bulkInsertSupported = false,
-                            serverType = serverType
-                        )
-                    }
-                    else -> println("Invalid choice. Please try again.")
-                }
-            }
-            "3" -> {
+            1 -> cli()
+            2 -> testSuite()
+            3 -> {
                 println("Exiting...")
                 return
             }
-            else -> println("Invalid choice. Please try again.")
         }
     }
 }
+
+
+fun getChoice(count: Int): Int {
+    val choices = mutableSetOf<String>()
+    for(i in 1..count) {
+        choices.add(i.toString())
+    }
+    fun badChoice() {
+        println("Invalid choice. Please try again.")
+    }
+    while(true){
+        print(">> ")
+        val input = readlnOrNull()
+        if(input.isNullOrBlank()) {
+            badChoice()
+            continue
+        }
+        if(input in choices) {
+            return input.toInt()
+        } else {
+            badChoice()
+        }
+    }
+}
+
+fun getNumber(): Int {
+    while (true) {
+        print(">> ")
+        val input = readlnOrNull()
+        if (input.isNullOrBlank()) {
+            println("Input cannot be empty. Please try again.")
+            continue
+        }
+        val number = input.toIntOrNull()
+        if (number != null) {
+            return number
+        } else {
+            println("Invalid number. Please try again.")
+        }
+    }
+}
+

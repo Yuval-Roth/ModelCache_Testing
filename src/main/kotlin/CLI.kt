@@ -23,20 +23,7 @@ fun cli() {
             cache = when (targetChoice) {
                 "1" -> ModelCache.flask()
                 "2" -> ModelCache.fastAPI()
-                "3" -> {
-                    ws = WebSocketClient(URI("ws://$HOST"))
-                    ws.connect()
-                    ModelCache { request ->
-                        val toSend = WebSocketRequest(
-                            UUID.randomUUID().toString(),
-                            request
-                        ).toJson()
-                        ws.send(toSend)
-                        val returned = ws.nextMessageBlocking()
-                        val response = fromJson<WebSocketResponse>(returned)
-                        response.result.toJson()
-                    }
-                }
+                "3" -> ModelCache.websocket()
                 else -> {
                     println("Invalid choice. Please try again.")
                     continue

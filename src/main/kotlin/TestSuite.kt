@@ -1,7 +1,6 @@
 import ModelCacheRequest.*
 import com.sun.management.OperatingSystemMXBean
 import utils.WebSocketClient
-import utils.fromJson
 import java.lang.management.ManagementFactory
 import java.net.URI
 import java.util.concurrent.Semaphore
@@ -20,17 +19,34 @@ class TestSuite(
     val testsReporter = TestsReporter()
     val osBean = ManagementFactory.getOperatingSystemMXBean() as OperatingSystemMXBean
     val cache: ModelCache
-    val ws: WebSocketClient by lazy {
-        WebSocketClient(URI("ws://$HOST")).apply{ connectBlocking() }
-    }
+        get() = when(serverType.lowercase()) {
+                "flask" -> ModelCache.flask()
+                "fastapi" -> ModelCache.fastAPI()
+                "websocket" -> ModelCache.websocket()
+                else -> throw IllegalArgumentException("Invalid server type: $serverType")
+            }
 
     init {
         loadData()
-        cache = when(serverType.lowercase()) {
-            "flask" -> ModelCache.flask()
-            "fastapi" -> ModelCache.fastAPI()
-            "websocket" -> ModelCache.websocket(ws)
-            else -> throw IllegalArgumentException("Invalid server type: $serverType")
+
+        // used to trigger the annoying slf4j debug message before the first test output
+        if(serverType == "websocket") {
+            WebSocketClient(URI("ws://localhost:5000/modelcache"))
+        }
+    }
+
+    fun run(){
+        try{
+            test_insert_questions1_selfLookup_questions1()
+            test_questions1_loaded_pairLookup_questions2()
+
+            test_insert_questions2_selfLookup_questions2()
+            test_questions2_loaded_pairLookup_questions1()
+
+            println(getReport())
+
+        } catch(e: Exception) {
+            println("\nAn error occurred: \n${e.stackTraceToString()}\n")
         }
     }
 
@@ -39,11 +55,13 @@ class TestSuite(
     }
 
     private fun loadData(){
-        val data = DataLoader.chatgpt_generated()
+        val data = DataLoader.comqa_filtered()
         data.forEach {
             val question1 = it.question1
             val question2 = it.question2
             val answer = it.answer
+            questions1.add(question1)
+            questions2.add(question2)
             pairs[question1] = question2
             pairs[question2] = question1
             outputs[question1] = answer
@@ -51,7 +69,7 @@ class TestSuite(
         }
     }
 
-    private fun buildQueries(sentences: Set<String>): List<Query> {
+    private fun buildQueries(sentences: Collection<String>): List<Query> {
         val queries = mutableListOf<Query>()
         for (sentence in sentences) {
             val queryEntry = QueryEntry(Role.USER, sentence)
@@ -61,95 +79,43 @@ class TestSuite(
         return queries
     }
 
-    private fun insert(sentences: Set<String>) = when(serverType.lowercase()){
-        "websocket" -> insertWs(sentences)
-        "flask", "fastapi" -> insertRest(sentences)
-        else  -> throw IllegalArgumentException("Invalid server type: $serverType")
-    }
-
-    private fun insertWs(sentences: Set<String>){
-        val queries = buildQueries(sentences)
-        cache.insert(queries)
-        ws.nextMessageBlocking()
-    }
-
-    private fun insertRest(sentences: Set<String>){
-        val queries  = buildQueries(sentences)
-        if(bulkInsertSupported){
-            cache.insert(queries)
-        } else {
-            for(query in queries){
-                cache.insert(listOf(query))
+    private fun insert(sentences: Set<String>){
+        cache.use { cache ->
+            val queries = buildQueries(sentences)
+            if (bulkInsertSupported) {
+                cache.insert(queries)
+            } else {
+                for (query in queries) {
+                    cache.insert(listOf(query))
+                }
             }
         }
     }
 
-    private fun BasicLookup(sentences: Set<String>, workers: Int, getExpectedHitQuery: (String) -> String) = when(serverType.lowercase()) {
-        "websocket" -> lookupWs(sentences, workers,getExpectedHitQuery)
-        "flask", "fastapi" -> lookupRest(sentences, workers,getExpectedHitQuery)
-        else -> throw IllegalArgumentException("Invalid server type: $serverType")
-    }
-
-    private fun lookupWs(sentences: Set<String>, workers: Int, getExpectedHitQuery: (String) -> String) {
+    private fun lookup(sentences: Collection<String>, workers: Int, getExpectedHitQuery: (String) -> String) {
         val queries = buildQueries(sentences) as MutableList
         val queriesLock = Semaphore(1, true)
         val reportsLock = Semaphore(1, true)
         val threads = mutableListOf<Thread>()
         repeat(workers) {
             val t = Thread {
-                val ws = WebSocketClient(URI("ws://$HOST")).apply{ connectBlocking() }
-                val cache = ModelCache.websocket(ws)
-                while(true){
-                    queriesLock.acquire()
-                    if (queries.isEmpty()) {
+                cache.use { cache ->
+                    while(true){
+                        queriesLock.acquire()
+                        if (queries.isEmpty()) {
+                            queriesLock.release()
+                            return@Thread
+                        }
+                        val query = queries.removeFirst()
                         queriesLock.release()
-                        ws.closeBlocking()
-                        return@Thread
+                        val content = query.query[0].content
+                        val (response,time) = timer { cache.query(query.query) }
+                        reportsLock.acquire()
+                        handleQueryResponse(response, getExpectedHitQuery, content, time)
+                        reportsLock.release()
                     }
-                    val query = queries.removeFirst()
-                    queriesLock.release()
-                    val content = query.query[0].content
-                    val (returned,time) = timer {
-                        cache.query(query.query)
-                        ws.nextMessageBlocking()
-                    }
-                    val wsResponse = fromJson<WebSocketResponse>(returned)
-                    val response = wsResponse.result
-                    reportsLock.acquire()
-                    handleQueryResponse(response, getExpectedHitQuery, content, time)
-                    reportsLock.release()
                 }
             }.apply{ start() }
-            threads.add(t)
-        }
-        for (thread in threads) {
-            thread.join()
-        }
-    }
-
-    private fun lookupRest(sentences: Set<String>, workers: Int, getExpectedHitQuery: (String) -> String) {
-        val queries = buildQueries(sentences) as MutableList
-        val queriesLock = Semaphore(1, true)
-        val reportsLock = Semaphore(1, true)
-        val threads = mutableListOf<Thread>()
-        repeat(workers) {
-            val t = Thread {
-                while(true){
-                    queriesLock.acquire()
-                    if (queries.isEmpty()) {
-                        queriesLock.release()
-                        return@Thread
-                    }
-                    val query = queries.removeFirst()
-                    queriesLock.release()
-                    val content = query.query[0].content
-                    val (returned,time) = timer { cache.query(query.query) }
-                    val response = fromJson<Response>(returned)
-                    reportsLock.acquire()
-                    handleQueryResponse(response, getExpectedHitQuery, content, time)
-                    reportsLock.release()
-                }
-            }.apply {start()}
             threads.add(t)
         }
         for (thread in threads) {
@@ -218,26 +184,22 @@ class TestSuite(
                 }
             }
         }.apply { start() }
-        testsReporter.startTest(testName,outputQueries)
-        if(clearCacheBefore){
-            cache.clear()
-            if(serverType == "websocket") ws.nextMessageBlocking()
+        cache.use { cache->
+            testsReporter.startTest(testName,outputQueries)
+            if(clearCacheBefore) cache.clear()
+            val (_,totalTime) = timer {
+                val (_,insertionTime) = timer { insertion() }
+                testsReporter.logInsertionTime(insertionTime)
+                val (_,lookupTime) = timer { lookup() }
+                testsReporter.logLookupTime(lookupTime)
+            }
+            if(clearCacheAfter) cache.clear()
+            testRunning = false
+            systemMetricsThread.interrupt()
+            systemMetricsThread.join()
+            testsReporter.endTest(totalTime)
+            println("Done in ${totalTime}ms")
         }
-        val (_,totalTime) = timer {
-            val (_,insertionTime) = timer { insertion() }
-            testsReporter.logInsertionTime(insertionTime)
-            val (_,lookupTime) = timer { lookup() }
-            testsReporter.logLookupTime(lookupTime)
-        }
-        if(clearCacheAfter){
-            cache.clear()
-            if(serverType == "websocket") ws.nextMessageBlocking()
-        }
-        testRunning = false
-        systemMetricsThread.interrupt()
-        systemMetricsThread.join()
-        testsReporter.endTest(totalTime)
-        println("Done in ${totalTime}ms")
     }
 
     // ========================================================================== |
@@ -249,7 +211,7 @@ class TestSuite(
             testName = "insert questions1 => self-lookup questions1",
             clearCacheBefore = true,
             insertion = { insert(questions1) },
-            lookup = { BasicLookup(questions1,workers){ s -> s} }
+            lookup = { lookup(questions1,workers){ s -> s} }
         )
     }
     fun test_questions1_loaded_pairLookup_questions2(){
@@ -257,7 +219,7 @@ class TestSuite(
             testName = "questions1 loaded => pair-lookup questions2",
             outputQueries = false, // TODO: change to true when we want to see the output queries
             clearCacheAfter = true,
-            lookup = { BasicLookup(questions2,workers){ s -> pairs[s]!!} }
+            lookup = { lookup(questions2,workers){ s -> pairs[s]!!} }
         )
     }
     fun test_insert_questions2_selfLookup_questions2(){
@@ -265,32 +227,112 @@ class TestSuite(
             testName = "insert questions2 => self-lookup questions2",
             clearCacheBefore = true,
             insertion = { insert(questions2) },
-            lookup = { BasicLookup(questions2,workers){ s -> s} }
+            lookup = { lookup(questions2,workers){ s -> s} }
         )
     }
     fun test_questions2_loaded_pairLookup_questions1(){
         test(
-            "questions2 loaded => pair-lookup questions1",
+            testName = "questions2 loaded => pair-lookup questions1",
             outputQueries = false, // TODO: change to true when we want to see the output queries
             clearCacheAfter = true,
-            lookup = { BasicLookup(questions1,workers){ s -> pairs[s]!!} }
+            lookup = { lookup(questions1,workers){ s -> pairs[s]!!} }
         )
     }
 }
 
-fun testSuite(queryPrefix: String, bulkInsertSupported: Boolean, serverType: String) {
-    try{
-        val tests = TestSuite(bulkInsertSupported, queryPrefix, serverType,2)
+fun testSuite() {
+    val serverType: String
+    val enableBulkInsert: Boolean
+    val workers: Int
+    val queryPrefix: String
 
-        tests.test_insert_questions1_selfLookup_questions1()
-        tests.test_questions1_loaded_pairLookup_questions2()
+    val shouldNotHappen = IllegalStateException("Should not happen")
 
-        tests.test_insert_questions2_selfLookup_questions2()
-        tests.test_questions2_loaded_pairLookup_questions1()
-
-        println(tests.getReport())
-
-    } catch(e: Exception) {
-        println("\nAn error occurred: \n${e.stackTraceToString()}\n")
+    println("Select test:")
+    println("1. New system")
+    println("2. Old system")
+    println("3. Custom test")
+    val testChoice = getChoice(3)
+    when(testChoice){
+        1 -> {
+            enableBulkInsert = true
+            queryPrefix = "user: "
+            println("Select target server:")
+            println("1. flask")
+            println("2. fastAPI")
+            println("3. Websocket")
+            val serverChoice = getChoice(3)
+            serverType = when (serverChoice) {
+                1 -> "flask"
+                2 -> "fastapi"
+                3 -> "websocket"
+                else -> throw shouldNotHappen
+            }
+            println("Worker count:")
+            workers = getNumber()
+        }
+        2 -> {
+            enableBulkInsert = false
+            queryPrefix = "user###"
+            workers = 1
+            println("Select target server:")
+            println("1. flask")
+            println("2. fastAPI")
+            val serverChoice = getChoice(2)
+            serverType = when (serverChoice) {
+                1 -> "flask"
+                2 -> "fastapi"
+                else -> throw shouldNotHappen
+            }
+        }
+        3 -> {
+            println("Select target server:")
+            println("1. flask")
+            println("2. fastAPI")
+            println("3. Websocket")
+            val serverChoice = getChoice(3)
+            serverType = when (serverChoice) {
+                1 -> "flask"
+                2 -> "fastapi"
+                3 -> "websocket"
+                else -> throw shouldNotHappen
+            }
+            println("Enable bulk insert?")
+            println("1. Yes")
+            println("2. No")
+            val bulkInsertChoice = getChoice(2)
+            enableBulkInsert = when (bulkInsertChoice) {
+                1 -> true
+                2 -> false
+                else -> throw shouldNotHappen
+            }
+            println("Query prefix:")
+            println("1. new prefix ('user: ')")
+            println("2. old prefix ('user###')")
+            val queryPrefixChoice = getChoice(2)
+            queryPrefix = when (queryPrefixChoice) {
+                1 -> "user: "
+                2 -> "user###"
+                else -> throw shouldNotHappen
+            }
+            println("Worker count:")
+            workers = getNumber()
+        }
+        else -> throw shouldNotHappen
     }
+
+    println()
+    println("Running test suite with the following configuration:")
+    println("Target server  :  $serverType")
+    println("Bulk insert    :  $enableBulkInsert")
+    println("Query prefix   :  '$queryPrefix'")
+    println("Workers count  :  $workers")
+    println()
+
+    TestSuite(
+        bulkInsertSupported = enableBulkInsert,
+        queryPrefix = queryPrefix,
+        serverType = serverType,
+        workers = workers
+    ).run()
 }

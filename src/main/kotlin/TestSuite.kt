@@ -14,8 +14,8 @@ class TestSuite(
     val workers: Int
 ) {
     val pairs = HashMap<String,String>()
-    val sentences1 = HashSet<String>()
-    val sentences2 = HashSet<String>()
+    val questions1 = HashSet<String>()
+    val questions2 = HashSet<String>()
     val outputs = HashMap<String,String>()
     val testsReporter = TestsReporter()
     val osBean = ManagementFactory.getOperatingSystemMXBean() as OperatingSystemMXBean
@@ -39,26 +39,15 @@ class TestSuite(
     }
 
     private fun loadData(){
-        val regex = Regex("\"([\\w'?\\s.,:!@#$%;/^&*+\\-°=’—]*)\"")
-        val dataStream = this.javaClass.getResourceAsStream("test_data.txt")!!
-        dataStream.bufferedReader().use { reader ->
-            val lines = reader.readLines()
-            for (line in lines) {
-                val matches = regex.findAll(line).map { it.groupValues[1] }.toList()
-                if(matches.size != 3){
-                    println("Input not matched correctly: $line")
-                    continue
-                }
-                val (sentence1,sentence2,response) = matches
-                if(! sentences1.add(sentence1) || ! sentences2.add(sentence2)){
-                    println("Duplicate sentence found: $sentence1 or $sentence2")
-                    continue
-                }
-                pairs[sentence1] = sentence2
-                pairs[sentence2] = sentence1
-                outputs[sentence1] = response
-                outputs[sentence2] = response
-            }
+        val data = DataLoader.chatgpt_generated()
+        data.forEach {
+            val question1 = it.question1
+            val question2 = it.question2
+            val answer = it.answer
+            pairs[question1] = question2
+            pairs[question2] = question1
+            outputs[question1] = answer
+            outputs[question2] = answer
         }
     }
 
@@ -255,36 +244,36 @@ class TestSuite(
     // ========================== TEST DEFINITIONS ============================== |
     // ========================================================================== |
 
-    fun test_insert_sentences1_selfLookup_sentences1(){
+    fun test_insert_questions1_selfLookup_questions1(){
         test(
-            testName = "insert sentences1 => self-lookup sentences1",
+            testName = "insert questions1 => self-lookup questions1",
             clearCacheBefore = true,
-            insertion = { insert(sentences1) },
-            lookup = { BasicLookup(sentences1,workers){ s -> s} }
+            insertion = { insert(questions1) },
+            lookup = { BasicLookup(questions1,workers){ s -> s} }
         )
     }
-    fun test_sentences1_loaded_pairLookup_sentences2(){
+    fun test_questions1_loaded_pairLookup_questions2(){
         test(
-            testName = "sentences1 loaded => pair-lookup sentences2",
+            testName = "questions1 loaded => pair-lookup questions2",
             outputQueries = false, // TODO: change to true when we want to see the output queries
             clearCacheAfter = true,
-            lookup = { BasicLookup(sentences2,workers){ s -> pairs[s]!!} }
+            lookup = { BasicLookup(questions2,workers){ s -> pairs[s]!!} }
         )
     }
-    fun test_insert_sentences2_selfLookup_sentences2(){
+    fun test_insert_questions2_selfLookup_questions2(){
         test(
-            testName = "insert sentences2 => self-lookup sentences2",
+            testName = "insert questions2 => self-lookup questions2",
             clearCacheBefore = true,
-            insertion = { insert(sentences2) },
-            lookup = { BasicLookup(sentences2,workers){ s -> s} }
+            insertion = { insert(questions2) },
+            lookup = { BasicLookup(questions2,workers){ s -> s} }
         )
     }
-    fun test_sentences2_loaded_pairLookup_sentences1(){
+    fun test_questions2_loaded_pairLookup_questions1(){
         test(
-            "sentences2 loaded => pair-lookup sentences1",
+            "questions2 loaded => pair-lookup questions1",
             outputQueries = false, // TODO: change to true when we want to see the output queries
             clearCacheAfter = true,
-            lookup = { BasicLookup(sentences1,workers){ s -> pairs[s]!!} }
+            lookup = { BasicLookup(questions1,workers){ s -> pairs[s]!!} }
         )
     }
 }
@@ -293,11 +282,11 @@ fun testSuite(queryPrefix: String, bulkInsertSupported: Boolean, serverType: Str
     try{
         val tests = TestSuite(bulkInsertSupported, queryPrefix, serverType,2)
 
-        tests.test_insert_sentences1_selfLookup_sentences1()
-        tests.test_sentences1_loaded_pairLookup_sentences2()
+        tests.test_insert_questions1_selfLookup_questions1()
+        tests.test_questions1_loaded_pairLookup_questions2()
 
-        tests.test_insert_sentences2_selfLookup_sentences2()
-        tests.test_sentences2_loaded_pairLookup_sentences1()
+        tests.test_insert_questions2_selfLookup_questions2()
+        tests.test_questions2_loaded_pairLookup_questions1()
 
         println(tests.getReport())
 

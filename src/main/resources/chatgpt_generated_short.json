@@ -1,0 +1,52 @@
+[
+  {
+    "question1": "How can I reset my password?",
+    "question2": "What's the way to reset my password?",
+    "answer": "You can reset your password by clicking on 'Forgot Password' at the login screen."
+  },
+  {
+    "question1": "Can I change my account password?",
+    "question2": "Is there a way to update my password?",
+    "answer": "You can reset your password by clicking on 'Forgot Password' at the login screen."
+  },
+  {
+    "question1": "How do I recover my login password?",
+    "question2": "What's the process to get back a lost password?",
+    "answer": "You can reset your password by clicking on 'Forgot Password' at the login screen."
+  },
+  {
+    "question1": "I forgot my password, what should I do?",
+    "question2": "What can I do if I can't remember my password?",
+    "answer": "You can reset your password by clicking on 'Forgot Password' at the login screen."
+  },
+  {
+    "question1": "Where do I go to change my password?",
+    "question2": "How do I access the password change option?",
+    "answer": "You can reset your password by clicking on 'Forgot Password' at the login screen."
+  },
+  {
+    "question1": "How long does delivery usually take?",
+    "question2": "What's the normal shipping time?",
+    "answer": "Your order should arrive within 3-5 business days."
+  },
+  {
+    "question1": "When should I expect my package?",
+    "question2": "How many days does delivery take?",
+    "answer": "Your order should arrive within 3-5 business days."
+  },
+  {
+    "question1": "What is your typical delivery window?",
+    "question2": "How fast will my order get here?",
+    "answer": "Your order should arrive within 3-5 business days."
+  },
+  {
+    "question1": "Will my order arrive this week?",
+    "question2": "Is it coming in a few business days?",
+    "answer": "Your order should arrive within 3-5 business days."
+  },
+  {
+    "question1": "Do you deliver within 5 days?",
+    "question2": "Can I get the package this week?",
+    "answer": "Your order should arrive within 3-5 business days."
+  }
+]

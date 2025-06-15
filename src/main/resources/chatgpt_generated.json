@@ -1,0 +1,1012 @@
+[
+  {
+    "question1": "How can I reset my password?",
+    "question2": "What's the way to reset my password?",
+    "answer": "You can reset your password by clicking on 'Forgot Password' at the login screen."
+  },
+  {
+    "question1": "Can I change my account password?",
+    "question2": "Is there a way to update my password?",
+    "answer": "You can reset your password by clicking on 'Forgot Password' at the login screen."
+  },
+  {
+    "question1": "How do I recover my login password?",
+    "question2": "What's the process to get back a lost password?",
+    "answer": "You can reset your password by clicking on 'Forgot Password' at the login screen."
+  },
+  {
+    "question1": "I forgot my password, what should I do?",
+    "question2": "What can I do if I can't remember my password?",
+    "answer": "You can reset your password by clicking on 'Forgot Password' at the login screen."
+  },
+  {
+    "question1": "Where do I go to change my password?",
+    "question2": "How do I access the password change option?",
+    "answer": "You can reset your password by clicking on 'Forgot Password' at the login screen."
+  },
+  {
+    "question1": "How long does delivery usually take?",
+    "question2": "What's the normal shipping time?",
+    "answer": "Your order should arrive within 3-5 business days."
+  },
+  {
+    "question1": "When should I expect my package?",
+    "question2": "How many days does delivery take?",
+    "answer": "Your order should arrive within 3-5 business days."
+  },
+  {
+    "question1": "What is your typical delivery window?",
+    "question2": "How fast will my order get here?",
+    "answer": "Your order should arrive within 3-5 business days."
+  },
+  {
+    "question1": "Will my order arrive this week?",
+    "question2": "Is it coming in a few business days?",
+    "answer": "Your order should arrive within 3-5 business days."
+  },
+  {
+    "question1": "Do you deliver within 5 days?",
+    "question2": "Can I get the package this week?",
+    "answer": "Your order should arrive within 3-5 business days."
+  },
+  {
+    "question1": "Where is your refund policy posted?",
+    "question2": "How can I find your refund terms?",
+    "answer": "You can view our refund policy on the 'Returns & Refunds' page in the footer."
+  },
+  {
+    "question1": "Can I read your return policy online?",
+    "question2": "Is there a page for refund details?",
+    "answer": "You can view our refund policy on the 'Returns & Refunds' page in the footer."
+  },
+  {
+    "question1": "How do I find your return and refund rules?",
+    "question2": "Where can I view your return conditions?",
+    "answer": "You can view our refund policy on the 'Returns & Refunds' page in the footer."
+  },
+  {
+    "question1": "What are your return guidelines?",
+    "question2": "Where do you outline your refund policy?",
+    "answer": "You can view our refund policy on the 'Returns & Refunds' page in the footer."
+  },
+  {
+    "question1": "Can I see the terms for getting a refund?",
+    "question2": "Do you list refund rules anywhere?",
+    "answer": "You can view our refund policy on the 'Returns & Refunds' page in the footer."
+  },
+  {
+    "question1": "Do you deliver abroad?",
+    "question2": "Is international shipping available?",
+    "answer": "Yes, we offer international shipping to most countries."
+  },
+  {
+    "question1": "Can I order from overseas?",
+    "question2": "Do you ship to other countries?",
+    "answer": "Yes, we offer international shipping to most countries."
+  },
+  {
+    "question1": "Are international orders accepted?",
+    "question2": "Can people outside the country place orders?",
+    "answer": "Yes, we offer international shipping to most countries."
+  },
+  {
+    "question1": "Is overseas delivery an option?",
+    "question2": "Do you provide international delivery?",
+    "answer": "Yes, we offer international shipping to most countries."
+  },
+  {
+    "question1": "Can I buy from your site if I'm not local?",
+    "question2": "Does your store support non-domestic shipping?",
+    "answer": "Yes, we offer international shipping to most countries."
+  },
+  {
+    "question1": "How do I reach customer support?",
+    "question2": "What's the way to contact your support team?",
+    "answer": "You can contact our support team via the 'Contact Us' page or chat with us directly."
+  },
+  {
+    "question1": "What's your customer service contact info?",
+    "question2": "How can I talk to someone from support?",
+    "answer": "You can contact our support team via the 'Contact Us' page or chat with us directly."
+  },
+  {
+    "question1": "Where can I speak to a support agent?",
+    "question2": "How do I get in touch with support?",
+    "answer": "You can contact our support team via the 'Contact Us' page or chat with us directly."
+  },
+  {
+    "question1": "What's the best way to ask for help?",
+    "question2": "How do I request support?",
+    "answer": "You can contact our support team via the 'Contact Us' page or chat with us directly."
+  },
+  {
+    "question1": "Can I reach your team via chat?",
+    "question2": "Do you offer live chat for support?",
+    "answer": "You can contact our support team via the 'Contact Us' page or chat with us directly."
+  },
+  {
+    "question1": "Do you offer a free trial?",
+    "question2": "Is a free version available to try?",
+    "answer": "Yes, we offer a 14-day free trial with full features."
+  },
+  {
+    "question1": "Can I test the product for free?",
+    "question2": "Is there a way to try before buying?",
+    "answer": "Yes, we offer a 14-day free trial with full features."
+  },
+  {
+    "question1": "Is a trial period included?",
+    "question2": "Can I try it out temporarily?",
+    "answer": "Yes, we offer a 14-day free trial with full features."
+  },
+  {
+    "question1": "Can I sign up without paying right away?",
+    "question2": "Is there a no-cost trial option?",
+    "answer": "Yes, we offer a 14-day free trial with full features."
+  },
+  {
+    "question1": "Do I get access to a trial?",
+    "question2": "Is there a 14-day trial for this?",
+    "answer": "Yes, we offer a 14-day free trial with full features."
+  },
+  {
+    "question1": "How do I cancel my plan?",
+    "question2": "Can I stop my subscription?",
+    "answer": "You can cancel your subscription anytime from your account settings."
+  },
+  {
+    "question1": "Is it possible to cancel my subscription?",
+    "question2": "Can I deactivate my subscription?",
+    "answer": "You can cancel your subscription anytime from your account settings."
+  },
+  {
+    "question1": "Where can I cancel my membership?",
+    "question2": "How do I turn off my subscription?",
+    "answer": "You can cancel your subscription anytime from your account settings."
+  },
+  {
+    "question1": "Can I cancel anytime?",
+    "question2": "Is the subscription cancellable whenever I want?",
+    "answer": "You can cancel your subscription anytime from your account settings."
+  },
+  {
+    "question1": "Do I have to call to cancel?",
+    "question2": "Can I cancel it myself online?",
+    "answer": "You can cancel your subscription anytime from your account settings."
+  },
+  {
+    "question1": "Is my data secure with your company?",
+    "question2": "How do you handle user data safety?",
+    "answer": "We follow industry-standard security practices to keep your data safe and private."
+  },
+  {
+    "question1": "How do you secure user information?",
+    "question2": "How is user information protected?",
+    "answer": "We follow industry-standard security practices to keep your data safe and private."
+  },
+  {
+    "question1": "Do you encrypt user data?",
+    "question2": "Is my personal info kept safe?",
+    "answer": "We follow industry-standard security practices to keep your data safe and private."
+  },
+  {
+    "question1": "Are your servers secure?",
+    "question2": "Do you comply with security protocols?",
+    "answer": "We follow industry-standard security practices to keep your data safe and private."
+  },
+  {
+    "question1": "How do you protect customer data?",
+    "question2": "What measures secure my account?",
+    "answer": "We follow industry-standard security practices to keep your data safe and private."
+  },
+  {
+    "question1": "What payment methods are accepted?",
+    "question2": "How can I pay you?",
+    "answer": "We accept major credit cards, PayPal, and other popular payment methods."
+  },
+  {
+    "question1": "Do you take PayPal?",
+    "question2": "Can I use a credit card?",
+    "answer": "We accept major credit cards, PayPal, and other popular payment methods."
+  },
+  {
+    "question1": "Is Apple Pay available?",
+    "question2": "Do you support mobile payments?",
+    "answer": "We accept major credit cards, PayPal, and other popular payment methods."
+  },
+  {
+    "question1": "Can I pay with Visa or Mastercard?",
+    "question2": "Are debit cards accepted?",
+    "answer": "We accept major credit cards, PayPal, and other popular payment methods."
+  },
+  {
+    "question1": "Do you support digital wallets?",
+    "question2": "Can I use Stripe or Google Pay?",
+    "answer": "We accept major credit cards, PayPal, and other popular payment methods."
+  },
+  {
+    "question1": "Are student discounts offered?",
+    "question2": "Do you have a student deal?",
+    "answer": "Yes, students can apply for a discount using a valid student ID or email."
+  },
+  {
+    "question1": "Do students get any price cuts?",
+    "question2": "Is there an education discount?",
+    "answer": "Yes, students can apply for a discount using a valid student ID or email."
+  },
+  {
+    "question1": "Is there a discount for college users?",
+    "question2": "Do you provide special pricing for students?",
+    "answer": "Yes, students can apply for a discount using a valid student ID or email."
+  },
+  {
+    "question1": "How do I apply for a student discount?",
+    "question2": "Can I verify my student status for a deal?",
+    "answer": "Yes, students can apply for a discount using a valid student ID or email."
+  },
+  {
+    "question1": "Can I get a lower price as a student?",
+    "question2": "Do students receive promotional rates?",
+    "answer": "Yes, students can apply for a discount using a valid student ID or email."
+  },
+  {
+    "question1": "What's the weather like today?",
+    "question2": "Can you tell me today's weather?",
+    "answer": "Sure! Today's weather is sunny with a high of 25°C."
+  },
+  {
+    "question1": "Where is the nearest coffee shop?",
+    "question2": "Can you point me to the closest cafe?",
+    "answer": "There's a great coffee shop two blocks away on Main Street."
+  },
+  {
+    "question1": "Did you finish the report?",
+    "question2": "Have you completed the report?",
+    "answer": "Yes, the report is done and sent to your email."
+  },
+  {
+    "question1": "What time does the movie start?",
+    "question2": "When does the film begin?",
+    "answer": "The movie starts at 7:30 PM."
+  },
+  {
+    "question1": "Can I bring a guest to the party?",
+    "question2": "Is it okay if I invite someone to the party?",
+    "answer": "Yes, you're welcome to bring a guest."
+  },
+  {
+    "question1": "Where did you put my keys?",
+    "question2": "Do you know where my keys are?",
+    "answer": "You left them on the kitchen counter."
+  },
+  {
+    "question1": "How much does this cost?",
+    "question2": "What's the price of this item?",
+    "answer": "It costs $25."
+  },
+  {
+    "question1": "Are you free this weekend?",
+    "question2": "Do you have time this weekend?",
+    "answer": "Yes, I'm available on Saturday."
+  },
+  {
+    "question1": "Is the package delivered?",
+    "question2": "Has the delivery arrived?",
+    "answer": "Yes, the package was delivered this morning."
+  },
+  {
+    "question1": "Do you want coffee?",
+    "question2": "Would you like some coffee?",
+    "answer": "Yes, I'd love a cup. Thanks!"
+  },
+  {
+    "question1": "Can you help me with this task?",
+    "question2": "I need help with this job, can you assist?",
+    "answer": "Of course, I'm happy to help."
+  },
+  {
+    "question1": "What day is our meeting?",
+    "question2": "When is our meeting scheduled?",
+    "answer": "It's set for Tuesday at 10 AM."
+  },
+  {
+    "question1": "Where are you from?",
+    "question2": "What's your hometown?",
+    "answer": "I'm from Chicago."
+  },
+  {
+    "question1": "Do you play the guitar?",
+    "question2": "Are you a guitarist?",
+    "answer": "Yes, I've been playing for 10 years."
+  },
+  {
+    "question1": "How are you feeling today?",
+    "question2": "Are you feeling okay today?",
+    "answer": "I'm doing well, thanks for asking."
+  },
+  {
+    "question1": "Do you like sushi?",
+    "question2": "Are you a fan of sushi?",
+    "answer": "Yes, I really enjoy it!"
+  },
+  {
+    "question1": "What's your favorite movie?",
+    "question2": "Which movie do you like the most?",
+    "answer": "My favorite movie is Inception."
+  },
+  {
+    "question1": "Do you have pets?",
+    "question2": "Are you an animal owner?",
+    "answer": "Yes, I have a dog and two cats."
+  },
+  {
+    "question1": "What's your job?",
+    "question2": "What do you do for work?",
+    "answer": "I'm a software engineer."
+  },
+  {
+    "question1": "Is this seat taken?",
+    "question2": "Can I sit here?",
+    "answer": "No, go ahead. It's free."
+  },
+  {
+    "question1": "How long is the flight?",
+    "question2": "What's the flight duration?",
+    "answer": "The flight lasts about six hours."
+  },
+  {
+    "question1": "Did you read my email?",
+    "question2": "Have you checked my email?",
+    "answer": "Yes, I saw it and will reply shortly."
+  },
+  {
+    "question1": "Can you drive me to the station?",
+    "question2": "Would you take me to the station?",
+    "answer": "Sure, I can give you a ride."
+  },
+  {
+    "question1": "What's the capital of France?",
+    "question2": "Do you know the capital of France?",
+    "answer": "Yes, it's Paris."
+  },
+  {
+    "question1": "Are you hungry?",
+    "question2": "Would you like something to eat?",
+    "answer": "Yes, I could eat."
+  },
+  {
+    "question1": "Is this the correct password?",
+    "question2": "Does this password work?",
+    "answer": "Yes, that's the correct one."
+  },
+  {
+    "question1": "Can we talk later?",
+    "question2": "Is it okay if we discuss this later?",
+    "answer": "Yes, let's talk later today."
+  },
+  {
+    "question1": "Is there Wi-Fi here?",
+    "question2": "Can I connect to the internet here?",
+    "answer": "Yes, the network name is 'CafeGuest'."
+  },
+  {
+    "question1": "Did you enjoy the movie?",
+    "question2": "Was the film good?",
+    "answer": "Yes, it was excellent!"
+  },
+  {
+    "question1": "Can you fix this?",
+    "question2": "Is it possible for you to repair this?",
+    "answer": "I'll take care of it right away."
+  },
+  {
+    "question1": "Do you speak Spanish?",
+    "question2": "Can you understand Spanish?",
+    "answer": "Yes, I'm fluent in Spanish."
+  },
+  {
+    "question1": "What time is it?",
+    "question2": "Could you tell me the time?",
+    "answer": "It's 3:45 PM."
+  },
+  {
+    "question1": "Have you been to Japan?",
+    "question2": "Did you ever visit Japan?",
+    "answer": "Yes, I went there last year."
+  },
+  {
+    "question1": "Can I call you later?",
+    "question2": "Is it okay if I phone you later?",
+    "answer": "Sure, call me whenever you're free."
+  },
+  {
+    "question1": "Where's the bathroom?",
+    "question2": "Can you tell me where the restroom is?",
+    "answer": "It's down the hall to the right."
+  },
+  {
+    "question1": "Did you like the gift?",
+    "question2": "Were you happy with the present?",
+    "answer": "Yes, I loved it-thank you!"
+  },
+  {
+    "question1": "What's your name?",
+    "question2": "Can you tell me your name?",
+    "answer": "I'm Alex."
+  },
+  {
+    "question1": "Are you coming to the meeting?",
+    "question2": "Will you attend the meeting?",
+    "answer": "Yes, I'll be there."
+  },
+  {
+    "question1": "Do you need any help?",
+    "question2": "Would you like assistance?",
+    "answer": "No thanks, I'm good for now."
+  },
+  {
+    "question1": "Is the store open today?",
+    "question2": "Is the shop open right now?",
+    "answer": "Yes, it's open until 9 PM."
+  },
+  {
+    "question1": "Do you know him?",
+    "question2": "Did you already know him?",
+    "answer": "Yes, we've met a few times."
+  },
+  {
+    "question1": "What's your favorite food?",
+    "question2": "Which dish do you like most?",
+    "answer": "I really love pizza."
+  },
+  {
+    "question1": "Is it going to rain today?",
+    "question2": "Will it rain today?",
+    "answer": "Yes, there's a 70% chance of rain."
+  },
+  {
+    "question1": "Do you work from home?",
+    "question2": "Is your job remote?",
+    "answer": "Yes, I work from home full-time."
+  },
+  {
+    "question1": "Have you read this book?",
+    "question2": "Did you read this novel?",
+    "answer": "Yes, I finished it last week."
+  },
+  {
+    "question1": "Are you ready to go?",
+    "question2": "Can we leave now?",
+    "answer": "Yes, I'm all set."
+  },
+  {
+    "question1": "Is that your car?",
+    "question2": "Does that vehicle belong to you?",
+    "answer": "Yes, that's my car."
+  },
+  {
+    "question1": "What's the plan for tomorrow?",
+    "question2": "What are we doing tomorrow?",
+    "answer": "We're visiting the museum at noon."
+  },
+  {
+    "question1": "Do you live nearby?",
+    "question2": "Are you from around here?",
+    "answer": "Yes, I live just a few blocks away."
+  },
+  {
+    "question1": "Have you eaten yet?",
+    "question2": "Did you have your meal?",
+    "answer": "Yes, I already ate."
+  },
+  {
+    "question1": "Can I borrow your charger?",
+    "question2": "Would you lend me your charger?",
+    "answer": "Sure, here you go."
+  },
+  {
+    "question1": "Is this your first time here?",
+    "question2": "Have you ever been here before?",
+    "answer": "Yes, it's my first visit."
+  },
+  {
+    "question1": "Are you tired?",
+    "question2": "Do you feel sleepy?",
+    "answer": "A bit, it's been a long day."
+  },
+  {
+    "question1": "Will you be at the event?",
+    "question2": "Are you going to the event?",
+    "answer": "Yes, I plan to attend."
+  },
+  {
+    "question1": "Do you want to watch a movie?",
+    "question2": "Are you up for a film?",
+    "answer": "Sure, let's pick one."
+  },
+  {
+    "question1": "Do you need a ride?",
+    "question2": "Would you like a lift?",
+    "answer": "Yes, that would be great, thanks!"
+  },
+  {
+    "question1": "Have you seen my phone?",
+    "question2": "Do you know where my phone is?",
+    "answer": "It's on the couch."
+  },
+  {
+    "question1": "Is this your bag?",
+    "question2": "Does this bag belong to you?",
+    "answer": "Yes, that's mine."
+  },
+  {
+    "question1": "Do you want something to drink?",
+    "question2": "Would you like a beverage?",
+    "answer": "Yes, some water please."
+  },
+  {
+    "question1": "Are you okay?",
+    "question2": "Is everything alright?",
+    "answer": "Yeah, I'm fine. Thanks for asking."
+  },
+  {
+    "question1": "Is this your first day?",
+    "question2": "Are you new here?",
+    "answer": "Yes, today's my first day."
+  },
+  {
+    "question1": "Have you heard the news?",
+    "question2": "Did you get the news?",
+    "answer": "Yes, I heard it this morning."
+  },
+  {
+    "question1": "Do you know what time we leave?",
+    "question2": "What time are we supposed to leave?",
+    "answer": "We're leaving at 5 PM."
+  },
+  {
+    "question1": "Can we meet tomorrow?",
+    "question2": "Are you free to meet tomorrow?",
+    "answer": "Yes, let's meet in the afternoon."
+  },
+  {
+    "question1": "Do you want to come with us?",
+    "question2": "Would you like to join us?",
+    "answer": "Sure, I'd love to."
+  },
+  {
+    "question1": "Can you repeat that?",
+    "question2": "Would you mind saying that again?",
+    "answer": "Sure, I'll repeat it."
+  },
+  {
+    "question1": "Is the document ready?",
+    "question2": "Have you prepared the file?",
+    "answer": "Yes, it's ready to go."
+  },
+  {
+    "question1": "Are you still at work?",
+    "question2": "Are you working right now?",
+    "answer": "Yes, I'm still at the office."
+  },
+  {
+    "question1": "Can I get a receipt?",
+    "question2": "May I have a receipt, please?",
+    "answer": "Sure, here it is."
+  },
+  {
+    "question1": "Do you take credit cards?",
+    "question2": "Can I pay with a card?",
+    "answer": "Yes, we accept all major credit cards."
+  },
+  {
+    "question1": "Is this seat available?",
+    "question2": "Can I take this seat?",
+    "answer": "Yes, go ahead."
+  },
+  {
+    "question1": "Are we late?",
+    "question2": "Did we miss the start?",
+    "answer": "No, we're right on time."
+  },
+  {
+    "question1": "Can you explain this?",
+    "question2": "Would you mind clarifying this?",
+    "answer": "Sure, let me explain it step-by-step."
+  },
+  {
+    "question1": "Did you sleep well?",
+    "question2": "How was your sleep?",
+    "answer": "Yes, I slept great. Thanks!"
+  },
+  {
+    "question1": "Are you online?",
+    "question2": "Are you connected to the internet?",
+    "answer": "Yes, I'm online now."
+  },
+  {
+    "question1": "Can I ask a question?",
+    "question2": "Do you mind if I ask something?",
+    "answer": "Go ahead, ask away."
+  },
+  {
+    "question1": "Did you lock the door?",
+    "question2": "Is the door locked?",
+    "answer": "Yes, I locked it."
+  },
+  {
+    "question1": "Is this yours?",
+    "question2": "Do you own this?",
+    "answer": "Yes, it belongs to me."
+  },
+  {
+    "question1": "Have you finished eating?",
+    "question2": "Are you done with your meal?",
+    "answer": "Yes, I'm finished."
+  },
+  {
+    "question1": "Is the bus coming soon?",
+    "question2": "When will the bus arrive?",
+    "answer": "It should be here in 5 minutes."
+  },
+  {
+    "question1": "Do you want to play a game?",
+    "question2": "Are you interested in playing a game?",
+    "answer": "Sure, let's play something fun."
+  },
+  {
+    "question1": "Did you get the message?",
+    "question2": "Have you received my text?",
+    "answer": "Yes, I got it."
+  },
+  {
+    "question1": "Can I sit next to you?",
+    "question2": "Is it alright if I sit here?",
+    "answer": "Of course, feel free."
+  },
+  {
+    "question1": "Do you like music?",
+    "question2": "Are you into music?",
+    "answer": "Yes, I love it!"
+  },
+  {
+    "question1": "Have you been here before?",
+    "question2": "Is this your first visit?",
+    "answer": "Yes, I've been here a few times."
+  },
+  {
+    "question1": "Are you cold?",
+    "question2": "Do you feel chilly?",
+    "answer": "Yes, it's a bit cold in here."
+  },
+  {
+    "question1": "Do you need directions?",
+    "question2": "Are you looking for directions?",
+    "answer": "Yes, could you help me find this place?"
+  },
+  {
+    "question1": "Is it far from here?",
+    "question2": "Is the location a long way from here?",
+    "answer": "No, it's quite close."
+  },
+  {
+    "question1": "Have you paid the bill?",
+    "question2": "Did you settle the check?",
+    "answer": "Yes, I already paid."
+  },
+  {
+    "question1": "Can you send me the file?",
+    "question2": "Would you mind emailing me the document?",
+    "answer": "Sure, I'll send it right now."
+  },
+  {
+    "question1": "Do you know the answer?",
+    "question2": "Have you figured out the answer?",
+    "answer": "Yes, the answer is 42."
+  },
+  {
+    "question1": "Is the meeting still on?",
+    "question2": "Is the meeting still happening?",
+    "answer": "Yes, it's still on schedule."
+  },
+  {
+    "question1": "Do you remember me?",
+    "question2": "Have we met before?",
+    "answer": "Yes, I remember you!"
+  },
+  {
+    "question1": "The cat is sleeping on a couch.",
+    "question2": "The couch is where a cat is sleeping.",
+    "answer": "yes"
+  },
+  {
+    "question1": "She enjoys reading books in her free time.",
+    "question2": "In her spare time, she likes to read books.",
+    "answer": "yes"
+  },
+  {
+    "question1": "They went in order to the cinema last night.",
+    "question2": "Last night, they went in order to the movies.",
+    "answer": "yes"
+  },
+  {
+    "question1": "He is good at playing the guitar.",
+    "question2": "He plays the guitar well.",
+    "answer": "yes"
+  },
+  {
+    "question1": "The weather is nice today!",
+    "question2": "Today, the weather is pleasant!",
+    "answer": "yes"
+  },
+  {
+    "question1": "I can't attend a meeting tomorrow.",
+    "question2": "Tomorrow, I won’t be able to join a meeting.",
+    "answer": "yes"
+  },
+  {
+    "question1": "She cooked a delicious dinner.",
+    "question2": "The dinner she made was delicious.",
+    "answer": "yes"
+  },
+  {
+    "question1": "We are planning a trip in order to Japan.",
+    "question2": "A trip in order to Japan is what we’re planning.",
+    "answer": "yes"
+  },
+  {
+    "question1": "He always arrives upon time.",
+    "question2": "He is never late.",
+    "answer": "yes"
+  },
+  {
+    "question1": "The book was interesting to read!",
+    "question2": "Reading the book was fascinating!",
+    "answer": "yes"
+  },
+  {
+    "question1": "I'm learning how to speak French.",
+    "question2": "I'm studying a French language.",
+    "answer": "yes"
+  },
+  {
+    "question1": "The baby 's sleeping peacefully.",
+    "question2": "The infant 's resting quietly.",
+    "answer": "yes"
+  },
+  {
+    "question1": "They moved in order to a new apartment.",
+    "question2": "They relocated in order to a different flat.",
+    "answer": "yes"
+  },
+  {
+    "question1": "She passed the exam with flying colors.",
+    "question2": "She aced the test.",
+    "answer": "yes"
+  },
+  {
+    "question1": "I love drinking hot coffee in the morning!",
+    "question2": "In the morning, I enjoy a cup of hot coffee!",
+    "answer": "yes"
+  },
+  {
+    "question1": "He's watching his favorite TV show.",
+    "question2": "He is viewing his most loved television program.",
+    "answer": "yes"
+  },
+  {
+    "question1": "The sun rises in the east.",
+    "question2": "In the east, the sun comes up.",
+    "answer": "yes"
+  },
+  {
+    "question1": "We finished the project ahead of schedule.",
+    "question2": "The project was completed earlier than planned.",
+    "answer": "yes"
+  },
+  {
+    "question1": "The car needs to be repaired.",
+    "question2": "The vehicle requires fixing.",
+    "answer": "yes"
+  },
+  {
+    "question1": "He didn't understand the instructions!",
+    "question2": "The directions were unclear to him!",
+    "answer": "yes"
+  },
+  {
+    "question1": "What is the capital of France?",
+    "question2": "Can you tell me what France's capital is?",
+    "answer": "Paris"
+  },
+  {
+    "question1": "Can you tell me how to cook spaghetti?",
+    "question2": "What is the method for cooking spaghetti?",
+    "answer": "Boil the pasta for about 8-10 minutes."
+  },
+  {
+    "question1": "Explain quantum computing in simple terms.",
+    "question2": "Can you break down quantum computing so it's easy to understand?",
+    "answer": "Quantum computing uses qubits that can be in multiple states at once."
+  },
+  {
+    "question1": "What is the weather like in New York today?",
+    "question2": "Can you give me today's weather forecast for New York?",
+    "answer": "Sunny with a high of 75°F."
+  },
+  {
+    "question1": "Who wrote 'To Kill a Mockingbird'?",
+    "question2": "Could you tell me who the author of 'To Kill a Mockingbird' is?",
+    "answer": "Harper Lee"
+  },
+  {
+    "question1": "Translate 'hello' into Spanish.",
+    "question2": "How do you say 'hello' in Spanish?",
+    "answer": "Hola"
+  },
+  {
+    "question1": "Summarize the plot of 'Inception'.",
+    "question2": "Can you give a short summary of the movie 'Inception'?",
+    "answer": "'Inception' is about a thief who enters people's dreams to steal or implant ideas."
+  },
+  {
+    "question1": "What’s the definition of artificial intelligence?",
+    "question2": "How would you define artificial intelligence?",
+    "answer": "Artificial intelligence is the simulation of human intelligence in machines."
+  },
+  {
+    "question1": "How do I install Python on Windows?",
+    "question2": "What are the steps to install Python on a Windows computer?",
+    "answer": "Download the installer from python.org and run it."
+  },
+  {
+    "question1": "What’s 15% of 200?",
+    "question2": "Can you calculate 15 percent of 200 for me?",
+    "answer": "30"
+  },
+  {
+    "question1": "Give me a recipe for chocolate cake.",
+    "question2": "Can you explain how to make a chocolate cake?",
+    "answer": "Mix flour, sugar, cocoa, and bake at 350°F for 30 minutes."
+  },
+  {
+    "question1": "What's the difference between a crocodile and an alligator?",
+    "question2": "How are alligators different from crocodiles?",
+    "answer": "Crocodiles have longer, V-shaped snouts; alligators have U-shaped snouts."
+  },
+  {
+    "question1": "How do I reset my iPhone?",
+    "question2": "What’s the process for resetting an iPhone?",
+    "answer": "Hold the power and volume down buttons until the Apple logo appears."
+  },
+  {
+    "question1": "Explain photosynthesis.",
+    "question2": "Can you describe how photosynthesis works?",
+    "answer": "Photosynthesis is the process where plants convert sunlight into energy."
+  },
+  {
+    "question1": "What are the symptoms of COVID-19?",
+    "question2": "Can you list common COVID-19 symptoms?",
+    "answer": "Fever, cough, and shortness of breath."
+  },
+  {
+    "question1": "When was the Declaration of Independence signed?",
+    "question2": "Do you know the date the Declaration of Independence was signed?",
+    "answer": "July 4, 1776"
+  },
+  {
+    "question1": "What's the meaning of life?",
+    "question2": "How would you describe the purpose of life?",
+    "answer": "That’s a philosophical question—answers vary!"
+  },
+  {
+    "question1": "How do you say 'thank you' in Japanese?",
+    "question2": "Translate 'thank you' to Japanese.",
+    "answer": "Arigatou"
+  },
+  {
+    "question1": "What is machine learning?",
+    "question2": "Can you explain what machine learning is?",
+    "answer": "A subset of AI where machines learn from data without explicit programming."
+  },
+  {
+    "question1": "Would you kindly explain how plants produce their own food?",
+    "question2": "Can you explain how plants produce their own food?",
+    "answer": "Through photosynthesis."
+  },
+  {
+    "question1": "What is the boiling point of water?",
+    "question2": "At what temperature does water boil?",
+    "answer": "100°C or 212°F"
+  },
+  {
+    "question1": "Translate 'goodbye' to French.",
+    "question2": "How do you say 'goodbye' in French?",
+    "answer": "Au revoir"
+  },
+  {
+    "question1": "What's the tallest mountain in the world?",
+    "question2": "Which mountain is the highest on Earth?",
+    "answer": "Mount Everest"
+  },
+  {
+    "question1": "Define gravity.",
+    "question2": "What is the definition of gravity?",
+    "answer": "The force that attracts objects toward each other."
+  },
+  {
+    "question1": "What's the largest ocean?",
+    "question2": "Which ocean is the biggest?",
+    "answer": "Pacific Ocean"
+  },
+  {
+    "question1": "What's the square root of 144?",
+    "question2": "Can you calculate the square root of 144?",
+    "answer": "12"
+  },
+  {
+    "question1": "What's the speed of light?",
+    "question2": "How fast does light travel?",
+    "answer": "Approximately 299,792 km/s"
+  },
+  {
+    "question1": "What is H2O?",
+    "question2": "What does the chemical formula H2O represent?",
+    "answer": "Water"
+  },
+  {
+    "question1": "What is the main language spoken in Brazil?",
+    "question2": "Which language do Brazilians primarily speak?",
+    "answer": "Portuguese"
+  },
+  {
+    "question1": "What planet is known as the Red Planet?",
+    "question2": "Which planet is called the Red Planet?",
+    "answer": "Mars"
+  },
+  {
+    "question1": "What's the capital of Italy?",
+    "question2": "Do you know what Italy's capital is?",
+    "answer": "Rome"
+  },
+  {
+    "question1": "Can you tell me who the artist of the Mona Lisa is?",
+    "question2": "Would you kindly tell me who the artist of the Mona Lisa is?",
+    "answer": "Leonardo da Vinci"
+  },
+  {
+    "question1": "When was the first moon landing?",
+    "question2": "What year did humans first land on the moon?",
+    "answer": "1969"
+  },
+  {
+    "question1": "What currency is used in Japan?",
+    "question2": "Which currency do they use in Japan?",
+    "answer": "Yen"
+  },
+  {
+    "question1": "How many continents are there?",
+    "question2": "What's the number of continents on Earth?",
+    "answer": "Seven"
+  },
+  {
+    "question1": "Who invented the telephone?",
+    "question2": "Who is credited with inventing the telephone?",
+    "answer": "Alexander Graham Bell"
+  },
+  {
+    "question1": "Can you give an example of a programming language?",
+    "question2": "Would you kindly give an example of a programming language?",
+    "answer": "Python"
+  },
+  {
+    "question1": "What gas do humans need to breathe?",
+    "question2": "Which gas is essential for human respiration?",
+    "answer": "Oxygen"
+  },
+  {
+    "question1": "Who wrote '1984'?",
+    "question2": "Who is the author of the novel '1984'?",
+    "answer": "George Orwell"
+  }
+]

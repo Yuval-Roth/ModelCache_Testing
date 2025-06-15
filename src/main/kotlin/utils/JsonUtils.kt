@@ -28,6 +28,15 @@ object JsonUtils {
         .enableComplexMapKeySerialization()
         .create()
 
+    private val gsonPretty: Gson = GsonBuilder()
+        .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter())
+        .registerTypeAdapter(LocalDate::class.java, LocalDateAdapter())
+        .registerTypeAdapter(LocalTime::class.java, LocalTimeAdapter())
+        .enableComplexMapKeySerialization()
+        .setPrettyPrinting()
+        .disableHtmlEscaping()
+        .create()
+
     /**
      * Serialize an object to JSON string.
      *
@@ -40,6 +49,14 @@ object JsonUtils {
 
     fun <T> deserialize(json: String, type: Type): T {
         return gson.fromJson(json, type)
+    }
+
+    fun <T> deserializePretty(json: String, type: Type): T {
+        return gsonPretty.fromJson(json, type)
+    }
+
+    fun serializePretty(obj: Any): String {
+        return gsonPretty.toJson(obj)
     }
 
     private class LocalDateTimeAdapter : JsonSerializer<LocalDateTime>, JsonDeserializer<LocalDateTime> {

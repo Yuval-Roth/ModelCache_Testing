@@ -39,11 +39,13 @@ class TestSuite(
     }
 
     private fun loadData(){
-        val data = DataLoader.chatgpt_generated()
+        val data = DataLoader.comqa_filtered()
         data.forEach {
             val question1 = it.question1
             val question2 = it.question2
             val answer = it.answer
+            questions1.add(question1)
+            questions2.add(question2)
             pairs[question1] = question2
             pairs[question2] = question1
             outputs[question1] = answer
@@ -280,7 +282,7 @@ class TestSuite(
 
 fun testSuite(queryPrefix: String, bulkInsertSupported: Boolean, serverType: String) {
     try{
-        val tests = TestSuite(bulkInsertSupported, queryPrefix, serverType,2)
+        val tests = TestSuite(bulkInsertSupported, queryPrefix, serverType,6)
 
         tests.test_insert_questions1_selfLookup_questions1()
         tests.test_questions1_loaded_pairLookup_questions2()

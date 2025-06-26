@@ -9,6 +9,8 @@ It was created to benchmark performance improvements delievered by the [yuval-ro
 
 This readme covers how to run the CLI and the test suite.
 
+The testing data can be found in `src/main/resources`
+
 ## Setting up the ModelCache environment
 
 #### Before all changes:

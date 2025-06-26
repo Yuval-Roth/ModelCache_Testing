@@ -13,6 +13,8 @@ The testing data can be found in `src/main/resources`
 
 ## Setting up the ModelCache environment
 
+clone the ModelCache fork repository at https://github.com/Yuval-Roth/ModelCache
+
 #### Before all changes:
 1. Checkout the first commit: [Made it run](https://github.com/Yuval-Roth/ModelCache/commit/82ba867408949bf896d1317a4d17d6c4408b84da) (hash: 82ba867408949bf896d1317a4d17d6c4408b84da)
 2. Delete the existing `model/text2vec-base-chinese` folder and clone [the embedding model's repository](https://huggingface.co/shibing624/text2vec-base-chinese/tree/main) into the `/model` folder
